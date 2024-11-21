@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 import IFeelULogo from "/home/remi/桌面/i-feel-u/public/IFEELU_Logo_transparent.png";
 
 export default function Home() {
@@ -28,9 +29,21 @@ export default function Home() {
           <h1 className="font-semibold text-2xl my-10">
             那就來使用【I FEEL U】來抒發你內心的任何心情吧！
           </h1>
-          <Button className="p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
-            <h1 className="text-white font-semibold text-lg">開始試用</h1>
-          </Button>
+          <div className="flex">
+            <Button className="mr-10 p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
+              <h1 className="text-white font-semibold text-lg">開始試用</h1>
+            </Button>
+            <Button className="mr-10 p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
+              <h1 className="text-white font-semibold text-lg">
+                <Link href={`/main/About`}>關於 I Feel U</Link>
+              </h1>
+            </Button>
+            <Button className="mr-10 p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
+              <h1 className="text-white font-semibold text-lg">
+                <Link href={`/main/ContactUs`}>聯絡我們</Link>
+              </h1>
+            </Button>
+          </div>
         </div>
         <div className="w-full max-w-xl">
           <Image
