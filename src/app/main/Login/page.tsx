@@ -29,7 +29,7 @@ const Page = () => {
               <h1 className="text-white font-semibold text-lg">Sign Up</h1>
             </Button>
           </div>
-          <Link className="no-underline hover:underline" href="/">
+          <Link className="no-underline hover:underline" href="/main/Chatroom">
             {`Continue without signing in (no records will be saved)`}
           </Link>
         </div>
