@@ -1,101 +1,47 @@
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import IFeelULogo from "/home/remi/桌面/i-feel-u/public/IFEELU_Logo_transparent.png";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="flex flex-col items-center min-h-screen  gap-16 sm:p-10 bg-[#F0E7DA]">
+      {/* title box */}
+      <div className="flex items-center bg-white rounded-3xl px-20 py-40 shadow-lg w-full min-w-fit min-h-fit">
+        <div className="flex flex-col w-1/3 items-start">
+          <h1 className="text-8xl text-[#9a8980] bevan-regular">NEVER</h1>
+          <h1 className="text-8xl text-[#9a8980] bevan-regular">BEEN</h1>
+          <h1 className="text-8xl text-[#9a8980] bevan-regular">FELT?</h1>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <div className="flex w-2/3 justify-end">
+          <h1 className="mr-20 text-9xl text-[#292628] bevan-regular ">I</h1>
+          <h1 className="mr-20 text-9xl text-[#6d5b47] bevan-regular ">FEEL</h1>
+          <h1 className="text-9xl text-[#9a8980] bevan-regular">U</h1>
+        </div>
+      </div>
+      {/* introduction */}
+      <div className="flex justify-between items-center px-20 w-full min-w-fit min-h-fit">
+        <div className="flex flex-col">
+          <h1 className="font-medium text-2xl my-10">
+            你是否有過無法被理解，卻沒有可以傾訴的對象呢?
+            又或者，你遇到某件事情，但沒有可以分享的對象呢?
+          </h1>
+          <h1 className="font-semibold text-2xl my-10">
+            那就來使用【I FEEL U】來抒發你內心的任何心情吧！
+          </h1>
+          <Button className="p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
+            <h1 className="text-white font-semibold text-lg">開始試用</h1>
+          </Button>
+        </div>
+        <div className="w-full max-w-xl">
           <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            src={IFeelULogo}
+            // layout="responsive"
+            width={1000}
+            height={1000}
+            alt="I FEEL U 團隊"
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </div>
+      </div>
     </div>
   );
 }
