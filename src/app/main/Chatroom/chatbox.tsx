@@ -21,7 +21,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messages }) => {
       {displayedMessages.map((message, index) => (
         <div
           key={index}
-          className={`mb-3 p-3 rounded-full  max-w-[50%] w-auto h-fit ${
+          className={`mb-3 p-3 rounded-xl  max-w-[50%] w-auto h-fit ${
             message.role === "user"
               ? "bg-[#decdbb] font-semibold justify-self-end"
               : "bg-[#decdbb] font-semibold justify-self-start"
