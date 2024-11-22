@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "regenerator-runtime/runtime";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,8 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { Switch } from "@nextui-org/switch";
 import { useRouter } from "next/navigation";
+import { UUID } from "crypto";
+import { Link } from "@mui/material";
 
 interface ChatroomProps {
   displayId: string; // 接收父组件传递的 displayId
@@ -24,6 +26,12 @@ interface Message {
   content: string;
 }
 
+interface ChatGroup {
+  displayId: UUID;
+  createdAt: string;
+  chat: Message[];
+}
+
 const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
   const {
     transcript,
@@ -33,6 +41,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
   } = useSpeechRecognition();
 
   const router = useRouter();
+  const initialised = useRef(false);
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -46,6 +55,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
+  const [chatGroups, setChatGroups] = useState<ChatGroup[]>([]);
 
   const handlePlayAudio = () => {
     if (audio) {
@@ -76,10 +86,60 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     }
   };
 
+  const handleSaveChat = async () => {
+    try {
+      const response = await fetch("/api/UserChatSave", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: display_id,
+          chat: messages,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to save chat");
+      }
+      const result = await response.json();
+    } catch (error) {
+      console.error("Error saving chat", error);
+      alert("儲存失敗");
+    }
+    handleGetChats();
+  };
+
+  const handleGetChats = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/GetUserChat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: display_id,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to save chat");
+      }
+      const result = await response.json();
+      setChatGroups(result.result);
+    } catch (error) {
+      console.error("Failed to get chat records", error);
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      router.push("/");
+    if (!initialised.current) {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        router.push("/");
+      }
+      handleGetChats();
+      initialised.current = true;
     }
   }, []);
 
@@ -204,13 +264,33 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
           {isSidebarOpen ? "<<" : ">>"}
         </Button>
         {isSidebarOpen && (
-          <div className="flex flex-col h-full pb-20">
+          <div className="flex flex-col h-full pb-20 ">
             <h2 className="text-[#6d5b47] text-xl font-semibold ">
               {display_id}
             </h2>
-            <ul className="flex-grow"></ul>
+            <div className="flex-grow flex-col flex">
+              {!isLoading &&
+                chatGroups.map((group) => (
+                  // <li key={group.displayId}>id: {group.displayId}</li>
+                  <Button
+                    key={group.displayId}
+                    className="my-5  hover:bg-[#9a8980] bg-[#cbb9af] text-[#292628]"
+                    onClick={() => setMessages(group.chat)}
+                  >
+                    {group.createdAt}
+                  </Button>
+                ))}
+            </div>
+
             <Button
-              className="w-full hover:bg-[#f4eee8] bg-[#6d5b47] text-[#292628]"
+              className="w-full hover:bg-[#f4eee8] bg-[#6d5b47] text-[#292628] my-10"
+              onClick={handleSaveChat}
+            >
+              save
+            </Button>
+
+            <Button
+              className="w-full hover:bg-[#f4eee8] bg-[#6d5b47] text-[#292628] self-end"
               onClick={handleLogout}
             >
               Sign Out

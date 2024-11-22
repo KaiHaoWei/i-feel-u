@@ -17,3 +17,15 @@ export const userTable = pgTable("Users", {
   userEmail: varchar("user_email").notNull(),
   userPassword: varchar("user_password", { length: 255 }).notNull(),
 });
+
+export const chatMessagesTable = pgTable("ChatMessages", {
+  displayId: uuid("display_id").defaultRandom().notNull().primaryKey(),
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => userTable.displayId, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  chat: jsonb("content").notNull(),
+});
