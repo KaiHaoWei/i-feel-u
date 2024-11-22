@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import { z } from "zod";
 import { db } from "@/db";
 import { userTable } from "@/db/schema";
@@ -19,6 +20,7 @@ type LoginUserRequest = z.infer<typeof loginUserSchema>;
 export async function POST(request: NextRequest) {
   let data;
 
+  // 驗證輸入資料
   try {
     data = await request.json();
     loginUserSchema.parse(data);
@@ -32,6 +34,7 @@ export async function POST(request: NextRequest) {
     // 從數據庫查詢用戶
     const [user] = await db
       .select({
+        display_id: userTable.displayId,
         userEmail: userTable.userEmail,
         userPassword: userTable.userPassword,
       })
@@ -57,8 +60,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 登入成功（此處可以生成和返回 JWT ）
-    return NextResponse.json({ message: "Login successful" }, { status: 200 });
+    // 登入成功，生成 JWT 並返回
+    const token = jwt.sign(
+      { display_id: user.display_id },
+      process.env.JWT_SECRET!,
+      { expiresIn: "1h" } // 設置過期時間（例如1小時）
+    );
+
+    // 返回用戶的 display_id 和 JWT
+    return NextResponse.json(
+      { message: user.display_id, token: token },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error during login:", error);
     return NextResponse.json(

@@ -5,26 +5,50 @@ import { Button } from "@/components/ui/button";
 import useRegister from "@/hooks/useRegistration";
 import useLogin from "@/hooks/useLogin";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+
+interface CustomJwtPayload {
+  display_id: string;
+  iat: number;
+  exp: number;
+}
 
 const Page = () => {
   const { registerLoading, registerUser } = useRegister();
   const { loginLoading, loginUser } = useLogin();
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const router = useRouter();
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      try {
+        // 解碼 token，並提取 display_id
+        const decoded = jwtDecode<CustomJwtPayload>(token);
+        const displayId = decoded.display_id;
+        router.push(`/main/PersonalChatroom/${displayId}`);
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
+  }, []);
 
   const handleRegister = async () => {
     try {
+      // 使用註冊 API 發送註冊請求
       const body = await registerUser({
         userEmail: userEmail,
         userPassword: userPassword,
       });
 
-      // 假设成功后会有一个 message 提示
+      // 假設註冊成功後顯示提示訊息
       alert("註冊成功！");
     } catch (error) {
       if (error instanceof Response) {
-        // 检查是否是 fetch 的 Response 对象
+        // 如果是 fetch 的 Response 物件
         try {
           const errorData = await error.json();
           alert(`註冊失敗: ${errorData.error || "未知的錯誤"}`);
@@ -32,16 +56,14 @@ const Page = () => {
           alert("註冊失敗: 無法解析伺服器錯誤信息");
         }
       } else if (error instanceof Error) {
-        // 如果是普通的 JavaScript Error 对象
         alert(`註冊失敗: ${error.message}`);
       } else {
-        // 无法识别的错误
         alert("註冊失敗: 發生未知錯誤");
       }
 
       console.error("Error during registration:", error);
     } finally {
-      // 清空输入框
+      // 清空輸入框
       setUserEmail("");
       setUserPassword("");
     }
@@ -49,22 +71,30 @@ const Page = () => {
 
   const handleLogin = async () => {
     try {
-      const body = await loginUser({
+      const response = await loginUser({
         userEmail: userEmail,
         userPassword: userPassword,
       });
+
+      if (response && response.token) {
+        const token = response.token;
+        localStorage.setItem("authToken", token);
+        router.push(`/main/PersonalChatroom/${response.message}`);
+      } else {
+        alert("Login failed: No token received.");
+      }
     } catch (error) {
-      console.log(error);
+      alert(`Login failed: ${error}`);
     }
   };
 
   return (
-    <div className="flex bg-[#dfd6ce] items-center min-h-screen  gap-16 sm:p-20 w-full">
-      <div className="flex  w-full h-fit justify-between">
-        <div className=" flex flex-col m-10 p-20 items-center justify-center">
+    <div className="flex bg-[#dfd6ce] items-center min-h-screen gap-16 sm:p-20 w-full">
+      <div className="flex w-full h-fit justify-between">
+        <div className="flex flex-col m-10 p-20 items-center justify-center">
           <h1 className="text-9xl text-[#6d5b47] bevan-regular">Sign In</h1>
         </div>
-        <div className="flex flex-col  m-10 p-20 w-1/2">
+        <div className="flex flex-col m-10 p-20 w-1/2">
           <Input
             className="w-full bg-white rounded-full my-10"
             placeholder="E-mail"
