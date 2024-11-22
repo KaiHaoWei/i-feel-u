@@ -53,14 +53,14 @@ export async function POST(req: NextRequest) {
   if (!apiKey) {
     return NextResponse.json(
       { message: "API key not set correctly" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
   if (!messages || messages.length === 0) {
     return NextResponse.json(
       { message: "Messages are required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json(
       { message: "Error calling OpenAI API" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -15,5 +15,5 @@ import {
 export const userTable = pgTable("Users", {
   displayId: uuid("display_id").defaultRandom().notNull().primaryKey(),
   userEmail: varchar("user_email").notNull(),
-  userPassword: varchar("user_password", { length: 20 }).notNull(),
+  userPassword: varchar("user_password", { length: 255 }).notNull(),
 });

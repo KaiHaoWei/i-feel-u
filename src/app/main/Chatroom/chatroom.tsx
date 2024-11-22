@@ -31,7 +31,7 @@ const Chatroom = () => {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [speechRecognitionSupported, setSpeechRecognitionSupported] = useState(
-    browserSupportsSpeechRecognition
+    browserSupportsSpeechRecognition,
   ); // null or boolean
   const [audioOutput, setAudioOutput] = useState(true);
 
