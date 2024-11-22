@@ -7,14 +7,13 @@ import { db } from "@/db";
 import { userTable } from "@/db/schema";
 
 const postUserRequestSchema = z.object({
-  userEmail: z.string({
-    required_error: "Email is required",
-  }),
+  userEmail: z
+    .string({ required_error: "Email is required" })
+    .email("Invalid email format"), // 验证邮箱格式
   userPassword: z
-    .string({
-      required_error: "Password is required",
-    })
-    .max(20),
+    .string({ required_error: "Password is required" })
+    .min(8, "Password must be at least 8 characters") // 设置密码最小长度
+    .max(20, "Password must be no more than 20 characters"), // 设置密码最大长度
 });
 
 type postUserRequest = z.infer<typeof postUserRequestSchema>;
@@ -26,7 +25,7 @@ export async function POST(request: NextRequest) {
     postUserRequestSchema.parse(data); // 验证输入
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ error: "Invalid Input" }, { status: 400 });
+    return NextResponse.json({ error: "email或密碼格式錯誤" }, { status: 400 });
   }
 
   const { userEmail, userPassword } = data as postUserRequest;
