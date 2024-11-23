@@ -28,4 +28,5 @@ export const chatMessagesTable = pgTable("ChatMessages", {
     }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   chat: jsonb("content").notNull(),
+  title: varchar("title", { length: 20 }).default("新對話"),
 });
