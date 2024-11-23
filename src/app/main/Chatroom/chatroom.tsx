@@ -171,7 +171,7 @@ const Chatroom = () => {
         />
         <div className="flex flex-col">
           <Input
-            className="rounded-full w-full my-10 bg-[#f4eee8] py-8"
+            className="rounded-full w-full my-10 bg-[#f4eee8] py-8 text-black"
             placeholder="anything you want to say..."
             disabled={listening || isLoading}
             onChange={(e) => setInputValue(e.target.value)}

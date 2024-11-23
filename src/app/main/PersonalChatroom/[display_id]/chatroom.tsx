@@ -76,7 +76,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
       if (response.ok) {
         localStorage.removeItem("authToken");
         document.cookie = "authToken=; Max-Age=0"; // 清除 cookies
-        router.push("/");
+        router.push("/main/Login");
       } else {
         alert("登出失敗，請稍後再試！");
       }
@@ -122,10 +122,13 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
         }),
       });
       if (!response.ok) {
-        throw new Error("Failed to save chat");
+        throw new Error("Failed to get chat");
       }
       const result = await response.json();
-      setChatGroups(result.result);
+
+      if(result.message != "No records found"){
+        setChatGroups(result.result);
+      }
     } catch (error) {
       console.error("Failed to get chat records", error);
     }
@@ -321,7 +324,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
           />
           <div className="flex flex-col">
             <Input
-              className="rounded-full w-full my-10 bg-[#f4eee8] py-8"
+              className="rounded-full w-full my-10 bg-[#f4eee8] py-8 text-black"
               placeholder="anything you want to say..."
               disabled={listening || isLoading}
               onChange={(e) => setInputValue(e.target.value)}

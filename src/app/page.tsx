@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import IFeelULogo from "/home/remi/桌面/i-feel-u/public/IFEELU_Logo_transparent.png";
+import IFeelULogo from "@/../public/IFEELU_Logo_transparent.png";
 
 export default function Home() {
   return (

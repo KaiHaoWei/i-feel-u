@@ -96,7 +96,7 @@ const Page = () => {
         </div>
         <div className="flex flex-col m-10 p-20 w-1/2">
           <Input
-            className="w-full bg-white rounded-full my-10"
+            className="w-full bg-white rounded-full my-10 text-black"
             placeholder="E-mail"
             type="text"
             value={userEmail}
@@ -105,7 +105,7 @@ const Page = () => {
             }}
           ></Input>
           <Input
-            className="w-full bg-white rounded-full my-10"
+            className="w-full bg-white rounded-full my-10 text-black"
             placeholder="Password (8-20 characters)"
             type="password"
             value={userPassword}

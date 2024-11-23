@@ -1,5 +1,5 @@
 import Image from "next/image";
-import IFeelULogo from "/home/remi/桌面/i-feel-u/public/IFEELU_Logo_transparent.png";
+import IFeelULogo from "@/../public/IFEELU_Logo_transparent.png";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
