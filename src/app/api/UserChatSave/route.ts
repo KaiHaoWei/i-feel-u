@@ -96,7 +96,6 @@ async function generateTitle(
   }
 
   const apiKey = privateEnv.OPENAI_API_KEY_1;
-  const gptModel = "gpt-4"; // 確保模型名稱正確
 
   try {
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
