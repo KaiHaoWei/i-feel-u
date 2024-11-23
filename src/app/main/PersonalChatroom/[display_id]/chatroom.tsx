@@ -12,7 +12,6 @@ import SpeechRecognition, {
 import { Switch } from "@nextui-org/switch";
 import { useRouter } from "next/navigation";
 import { UUID } from "crypto";
-import { Link } from "@mui/material";
 
 interface ChatroomProps {
   displayId: string; // 接收父组件传递的 displayId
@@ -30,6 +29,7 @@ interface ChatGroup {
   displayId: UUID;
   createdAt: string;
   chat: Message[];
+  title: string;
 }
 
 const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
@@ -56,6 +56,8 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audio, setAudio] = useState<HTMLAudioElement | null>(null);
   const [chatGroups, setChatGroups] = useState<ChatGroup[]>([]);
+  const [currentChatId, setCurrentChatId] = useState<string>("");
+  const [saveNow, setSaveNow] = useState<boolean>(false);
 
   const handlePlayAudio = () => {
     if (audio) {
@@ -86,14 +88,15 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     }
   };
 
-  const handleSaveChat = async () => {
+  const handleAutoSave = async () => {
     try {
       const response = await fetch("/api/UserChatSave", {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          display_id: currentChatId || "",
           user_id: display_id,
           chat: messages,
         }),
@@ -102,6 +105,10 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
         throw new Error("Failed to save chat");
       }
       const result = await response.json();
+      //console.log(result);
+      if (result.display_id && !currentChatId) {
+        setCurrentChatId(result.display_id);
+      }
     } catch (error) {
       console.error("Error saving chat", error);
       alert("儲存失敗");
@@ -122,7 +129,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
         }),
       });
       if (!response.ok) {
-        throw new Error("Failed to save chat");
+        throw new Error("Failed to get chat");
       }
       const result = await response.json();
       setChatGroups(result.result);
@@ -131,6 +138,14 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     }
     setIsLoading(false);
   };
+
+  useEffect(() => {
+    if (saveNow) {
+      handleAutoSave();
+    }
+
+    setSaveNow(false);
+  }, [saveNow]);
 
   useEffect(() => {
     if (!initialised.current) {
@@ -166,6 +181,10 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     }
   }, [listening]);
 
+  // useEffect(() => {
+  //   handleAutoSave();
+  // }, [messages]);
+
   const startRecording = () => {
     resetTranscript(); // 重置轉換文字
     SpeechRecognition.startListening({ continuous: false, language: "zh-TW" });
@@ -187,7 +206,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     ];
 
     setMessages(newMessages);
-    // console.log(newMessages);
+
     setInputValue("");
     try {
       const responseText = await fetch("/api/GPTSpeechText", {
@@ -205,6 +224,8 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
       const message = dataText.message;
       // console.log(message);
       setMessages([...newMessages, { role: "assistant", content: message }]);
+
+      setSaveNow(true);
 
       const responseAudio = await fetch("/api/GPTSpeechAudio", {
         method: "POST",
@@ -246,10 +267,27 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     }
   };
 
+  const startNewChatroom = async () => {
+    setCurrentChatId("");
+    setMessages([]);
+  };
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
+
+  function formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("zh-TW", {
+      year: "numeric",
+      month: "long", // 顯示完整月份名稱，例如「十一月」
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false, // 使用 24 小時制
+    }).format(date);
+  }
 
   return (
     <div className="flex min-h-screen w-full">
@@ -269,25 +307,31 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
               {display_id}
             </h2>
             <div className="flex-grow flex-col flex">
+              <Button
+                className="my-5  hover:bg-[#9a8980] bg-[#cbb9af] text-[#292628]"
+                onClick={() => {
+                  startNewChatroom();
+                }}
+              >
+                +
+              </Button>
               {!isLoading &&
                 chatGroups.map((group) => (
-                  // <li key={group.displayId}>id: {group.displayId}</li>
                   <Button
                     key={group.displayId}
                     className="my-5  hover:bg-[#9a8980] bg-[#cbb9af] text-[#292628]"
-                    onClick={() => setMessages(group.chat)}
+                    onClick={() => {
+                      setMessages(group.chat);
+                      setCurrentChatId(group.displayId);
+                    }}
                   >
-                    {group.createdAt}
+                    <div className="flex flex-col">
+                      <h1>{group.title}</h1>
+                      <h1>{formatDate(group.createdAt)}</h1>
+                    </div>
                   </Button>
                 ))}
             </div>
-
-            <Button
-              className="w-full hover:bg-[#f4eee8] bg-[#6d5b47] text-[#292628] my-10"
-              onClick={handleSaveChat}
-            >
-              save
-            </Button>
 
             <Button
               className="w-full hover:bg-[#f4eee8] bg-[#6d5b47] text-[#292628] self-end"

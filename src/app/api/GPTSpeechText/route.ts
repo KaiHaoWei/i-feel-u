@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     content: `你正在傾聽非常要好的朋友。以下是你需要做到的事：第一點判斷對方的人格特質並給予符合對方性格的回答。
       第二點，若對方有想要犯罪、自我傷害的意圖時，請以正面的回答做回應，避免該情形發生。
       第三點，若你從對方的回答認為話題已經結束，請試著開啟新的話題。
-      第四點，如果對方說的是中文，就只能用繁體中文回答`,
+      第四點，根據對方使用的語言回答，除非對方要求使用特定語言。如果對方說的是中文，就只能用繁體中文顯示`,
   });
 
   // return NextResponse.json(
@@ -53,14 +53,14 @@ export async function POST(req: NextRequest) {
   if (!apiKey) {
     return NextResponse.json(
       { message: "API key not set correctly" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
   if (!messages || messages.length === 0) {
     return NextResponse.json(
       { message: "Messages are required" },
-      { status: 400 },
+      { status: 400 }
     );
   }
 
@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json(
       { message: "Error calling OpenAI API" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

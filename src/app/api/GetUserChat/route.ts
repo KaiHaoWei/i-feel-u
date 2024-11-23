@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { z } from "zod";
 import { db } from "@/db";
 import { chatMessagesTable } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
 
 const getChatRequestSchema = z.object({
   user_id: z.string().uuid(),
@@ -27,14 +27,15 @@ export async function POST(request: NextRequest) {
       .select()
       .from(chatMessagesTable)
       .where(eq(chatMessagesTable.userId, user_id))
+      .orderBy(desc(chatMessagesTable.createdAt))
       .execute();
 
-    if (result.length === 0) {
-      return NextResponse.json(
-        { message: "No records found" },
-        { status: 404 }
-      );
-    }
+    // if (result.length === 0) {
+    //   return NextResponse.json(
+    //     { message: "No records found" },
+    //     { status: 404 }
+    //   );
+    // }
 
     return NextResponse.json({ result: result }, { status: 200 });
   } catch (error) {
