@@ -12,6 +12,7 @@ import SpeechRecognition, {
 import { Switch } from "@nextui-org/switch";
 import { useRouter } from "next/navigation";
 import { UUID } from "crypto";
+import Link from "next/link";
 
 interface ChatroomProps {
   displayId: string; // 接收父组件传递的 displayId
@@ -133,7 +134,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
       }
       const result = await response.json();
 
-      if(result.message != "No records found"){
+      if (result.message != "No records found") {
         setChatGroups(result.result);
       }
     } catch (error) {
@@ -335,7 +336,9 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
                   </Button>
                 ))}
             </div>
-
+            <Button className="w-full mb-10 hover:bg-[#f4eee8] bg-[#6d5b47] text-[#292628] self-end">
+              <Link href={"/"}>Home</Link>
+            </Button>
             <Button
               className="w-full hover:bg-[#f4eee8] bg-[#6d5b47] text-[#292628] self-end"
               onClick={handleLogout}

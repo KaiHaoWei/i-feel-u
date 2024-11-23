@@ -32,7 +32,7 @@ export default function Home() {
           <div className="flex">
             <Button className="mr-10 p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
               <h1 className="text-white font-semibold text-lg">
-                <Link href={`/main/Login`}>開始試用</Link>
+                <Link href={`/main/Login`}>進入聊天室</Link>
               </h1>
             </Button>
             <Button className="mr-10 p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">

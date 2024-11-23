@@ -121,10 +121,15 @@ const Page = () => {
               <h1 className="text-white font-semibold text-lg">Sign In</h1>
             </Button>
             <Button
-              className="p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10"
+              className="p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10 mr-10"
               onClick={handleRegister}
             >
               <h1 className="text-white font-semibold text-lg">Sign Up</h1>
+            </Button>
+            <Button className="p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10 mr-10">
+              <Link className="text-white font-semibold text-lg" href={"/"}>
+                {`回到首頁`}
+              </Link>
             </Button>
           </div>
           <Link className="no-underline hover:underline" href="/main/Chatroom">
