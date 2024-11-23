@@ -1,14 +1,16 @@
 import Chatroom from "./chatroom";
 import "regenerator-runtime/runtime";
 
-type Props = {
+type PageProps = {
   params: {
-    display_id: string; // 使用 string 型別處理 display_id
+    display_id: string;
   };
 };
 
-async function Page({ params: { display_id } }: Props) {
-  // 驗證 display_id 是否符合 UUID 格式（可選）
+async function Page({ params }: PageProps) {
+  const { display_id } = params;
+
+  // 驗證 display_id 是否為有效 UUID 格式
   const isValidUUID = (id: string): boolean => {
     const uuidRegex =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -33,3 +35,10 @@ async function Page({ params: { display_id } }: Props) {
 
 export default Page;
 
+export async function generateStaticParams() {
+  // 如果需要靜態生成頁面，請提供預設的 display_id 列表
+  return [
+    { display_id: "123e4567-e89b-12d3-a456-426614174000" },
+    { display_id: "987e6543-e21c-32d1-b654-326614174999" },
+  ];
+}
