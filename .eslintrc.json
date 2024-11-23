@@ -2,6 +2,7 @@
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
     "@typescript-eslint/no-unused-vars": "warn", // 未使用變數只警告，不報錯
+    "@typescript-eslint/no-empty-object-type": "off", // 關閉空物件型別的警告
     "prefer-const": "warn", // 建議使用 const，但不強制
     "react-hooks/exhaustive-deps": "warn" // React hooks 缺少依賴只警告
   }
