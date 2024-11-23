@@ -16,6 +16,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "I Feel U",
   description: "2024 IM Project",
+  icons: {
+    icon: "/IFEELU_Logo_transparent.png",
+  },
 };
 
 export default function RootLayout({
