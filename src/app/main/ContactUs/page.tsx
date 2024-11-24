@@ -37,11 +37,13 @@ const Page = () => {
               <h1 className="font-medium text-2xl">ifeelusupport@gmail.com</h1>
             </div>
             <div className="flex flex-col h-fit mb-20">
-              <Button className="p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
-                <h1 className="text-white font-semibold text-lg">
-                  <Link href={`/`}>{`<< 回到首頁`}</Link>
-                </h1>
-              </Button>
+              <Link href={`/`}>
+                <Button className="p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
+                  <h1 className="text-white font-semibold text-lg">
+                    {`<< 回到首頁`}
+                  </h1>
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

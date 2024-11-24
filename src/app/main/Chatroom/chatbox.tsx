@@ -17,20 +17,21 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messages }) => {
   }, [messages]);
 
   return (
-    <div className=" p-4 mt-4 bg-[#f4eee8]/50 rounded-3xl max-h-[50vh] overflow-y-auto w-full">
+    <div className="p-4 mt-4 bg-[#f4eee8]/80 rounded-3xl max-h-[50vh] overflow-y-auto w-full shadow-lg">
       {displayedMessages.map((message, index) => (
         <div
           key={index}
-          className={`mb-3 p-3 rounded-xl  max-w-[50%] w-auto h-fit ${
-            message.role === "user"
-              ? "bg-[#decdbb] font-semibold justify-self-end"
-              : "bg-[#decdbb] font-semibold justify-self-start"
-          }`}
+          className={`mb-4 p-4 rounded-xl max-w-[40%] w-auto h-fit ${message.role === "user"
+              ? "bg-[#decdbb] text-black font-semibold self-end ml-auto"  // User message: Right-aligned
+              : "bg-[#6d5b47] text-white font-semibold self-start mr-auto"  // Assistant message: Left-aligned
+            }`}
         >
           <span className="m-2 p-2">{message.content}</span>
         </div>
       ))}
     </div>
+
+
   );
 };
 

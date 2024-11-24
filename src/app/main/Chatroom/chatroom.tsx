@@ -11,6 +11,8 @@ import SpeechRecognition, {
 } from "react-speech-recognition";
 import { Switch } from "@nextui-org/switch";
 
+import Link from 'next/link';
+
 const gptModel =
   "ft:gpt-4o-mini-2024-07-18:national-taiwan-university:1020qa:AKRgW64h";
 
@@ -108,7 +110,7 @@ const Chatroom = () => {
 
       const dataText = await responseText.json();
       const message = dataText.message;
-      // console.log(message);
+      // console.log(messag
       setMessages([...newMessages, { role: "assistant", content: message }]);
 
       const responseAudio = await fetch("/api/GPTSpeechAudio", {
@@ -152,8 +154,9 @@ const Chatroom = () => {
   };
 
   return (
-    <div className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center min-h-screen  gap-16 py-40 px-20 w-full">
+    <div className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center min-h-screen gap-16 py-40 px-20 w-full">
       <div className="flex flex-col w-full h-full justify-between">
+
         <Switch
           defaultSelected
           size="lg"
@@ -161,17 +164,20 @@ const Chatroom = () => {
           onValueChange={setAudioOutput}
           className="self-end"
         >
-          {audioOutput ? "Audio on" : "Audio off"}
+          <span className="text-gray-800">{audioOutput ? "Audio on" : "Audio off"}</span>
         </Switch>
+
         <ChatBox
           messages={messages}
           isPlaying={isPlaying}
           audioUrl={audioUrl}
           handlePlayAudio={handlePlayAudio}
         />
+
         <div className="flex flex-col">
           <Input
-            className="rounded-full w-full my-10 bg-[#f4eee8] py-8 text-black"
+            className="rounded-full w-full my-10 bg-[#f4eee8] py-8 px-5 text-black text-xl
+            border border-[#d4bba0] shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#d4bba0]" // Added border and shadow
             placeholder="anything you want to say..."
             disabled={listening || isLoading}
             onChange={(e) => setInputValue(e.target.value)}
@@ -182,25 +188,39 @@ const Chatroom = () => {
               }
             }}
           ></Input>
+
+
           <div className="flex w-full justify-center">
             <Button
               onClick={listening ? stopRecording : startRecording}
               disabled={listening && speechRecognitionSupported}
-              className="p-10 py-8 mx-10 w-fit rounded-full hover:bg-[#f4eee8] bg-[#decdbb] my-10"
+              className="p-10 py-8 mx-10 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] my-10 transition-all duration-300 ease-in-out transform hover:scale-105"
             >
               {listening ? <MicOff /> : <Mic />}
             </Button>
+
             <Button
               onClick={handleSendMessage}
               disabled={isLoading}
-              className="p-10 py-8 mx-10 w-fit rounded-full hover:bg-[#f4eee8] bg-[#decdbb] my-10"
+              className="p-10 py-8 mx-10 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] my-10 transition-all duration-300 ease-in-out transform hover:scale-105"
             >
-              {<SendIcon />}
+              <SendIcon />
             </Button>
+          </div>
+
+          <div className="flex items-center justify-center">
+            <Link href="/main/Login">
+              <span className="text-[#9a7b5d] hover:text-[#b69c83] transition-all duration-300 ease-in-out">
+                Already have an account? Sign In
+              </span>
+            </Link>
           </div>
         </div>
       </div>
     </div>
+
+
+
   );
 };
 

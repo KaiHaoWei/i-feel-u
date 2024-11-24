@@ -30,3 +30,15 @@ export const chatMessagesTable = pgTable("ChatMessages", {
   chat: jsonb("content").notNull(),
   title: varchar("title", { length: 20 }).default("新對話"),
 });
+
+// Define Relations
+export const userRelations = relations(userTable, ({ many }) => ({
+  conversations: many(chatMessagesTable), // A user has many conversations
+}));
+
+export const chatMessagesRelations = relations(chatMessagesTable, ({ one }) => ({
+  user: one(userTable, {
+    fields: [chatMessagesTable.userId], // The foreign key in ChatMessages
+    references: [userTable.displayId], // The primary key in Users
+  }),
+}));
