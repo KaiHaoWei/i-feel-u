@@ -86,7 +86,7 @@ export async function PUT(request: NextRequest) {
 }
 
 const gptModel =
-  "ft:gpt-4o-mini-2024-07-18:national-taiwan-university:1020qa:AKRgW64h";
+  "ft:gpt-4o-mini-2024-07-18:national-taiwan-university:1020qa-1106gptcon:AQUthpnV";
 
 async function generateTitle(
   chat: { role: string; content: string }[]

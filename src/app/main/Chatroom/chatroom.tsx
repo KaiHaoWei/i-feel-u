@@ -14,7 +14,7 @@ import { Switch } from "@nextui-org/switch";
 import Link from 'next/link';
 
 const gptModel =
-  "ft:gpt-4o-mini-2024-07-18:national-taiwan-university:1020qa:AKRgW64h";
+  "ft:gpt-4o-mini-2024-07-18:national-taiwan-university:1020qa-1106gptcon:AQUthpnV";
 
 interface Message {
   role: "user" | "assistant";

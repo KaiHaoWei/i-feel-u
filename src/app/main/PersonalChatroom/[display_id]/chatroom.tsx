@@ -19,7 +19,7 @@ interface ChatroomProps {
 }
 
 const gptModel =
-  "ft:gpt-4o-mini-2024-07-18:national-taiwan-university:1020qa:AKRgW64h";
+  "ft:gpt-4o-mini-2024-07-18:national-taiwan-university:1020qa-1106gptcon:AQUthpnV";
 
 interface Message {
   role: "user" | "assistant";
@@ -306,13 +306,10 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
           {isSidebarOpen ? "<<" : ">>"}
         </Button>
         {isSidebarOpen && (
-          <div className="flex flex-col h-full pb-20 ">
-            <h2 className="text-[#6d5b47] text-xl font-semibold ">
-              {display_id}
-            </h2>
+          <div className="flex flex-col h-full pb-20">
             <div className="flex-grow flex-col flex">
               <Button
-                className="my-5  hover:bg-[#9a8980] bg-[#cbb9af] text-[#292628]"
+                className="my-5 hover:bg-[#9a8980] bg-[#cbb9af] text-[#292628]"
                 onClick={() => {
                   startNewChatroom();
                 }}
@@ -323,7 +320,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
                 chatGroups.map((group) => (
                   <Button
                     key={group.displayId}
-                    className="my-5  hover:bg-[#9a8980] bg-[#cbb9af] text-[#292628]"
+                    className="my-5 hover:bg-[#9a8980] bg-[#cbb9af] text-[#292628] px-12 py-8"
                     onClick={() => {
                       setMessages(group.chat);
                       setCurrentChatId(group.displayId);

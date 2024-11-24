@@ -84,21 +84,21 @@ const Page = () => {
 
   return (
     <motion.div
-      className="flex bg-[#dfd6ce] items-center min-h-screen gap-16 sm:p-20 w-full"
+      className="flex bg-[#dfd6ce] items-center min-h-screen gap-16 sm:px-20 sm:py-0 w-full"
       initial={{ opacity: 0, x: -100 }} // Start with opacity 0 and from the left
       animate={{ opacity: 1, x: 0 }} // Animate to full opacity and default x position
       transition={{ duration: 0.8, ease: "easeOut" }} // Smooth transition
     >
       <div className="flex w-full h-fit justify-between">
         <motion.div
-          className="flex flex-col m-10 p-20 items-center justify-center"
+          className="flex flex-col sm:m-10 sm:p-20 items-center justify-center"
           initial={{ scale: 0.5, opacity: 0 }} // Start with smaller size and hidden
           animate={{ scale: 1, opacity: 1 }} // Animate to normal size and full opacity
           transition={{ duration: 0.6, ease: "easeOut" }} // Smooth transition with delay
         >
           {/* Title animation */}
           <motion.h1
-            className="text-9xl text-[#6d5b47] bevan-regular"
+            className="sm:text-[10vw] sm:text-9xl text-[#6d5b47] bevan-regular"
             initial={{ opacity: 0, x: -100 }} // Start with opacity 0 and slide in from left
             key={isSignUpMode ? "Sign Up" : "Sign In"} // Key to trigger re-render on mode change
             animate={{ opacity: 1, x: 0 }} // Animate to full opacity and default position
@@ -109,7 +109,7 @@ const Page = () => {
         </motion.div>
 
         {/* Container for input fields and buttons */}
-        <div className="flex flex-col m-10 p-20 w-1/2">
+        <div className="flex flex-col sm:m-10 sm:p-20 w-1/2">
           {/* Animated Input Fields */}
           <motion.div
             className="flex flex-col items-center"
