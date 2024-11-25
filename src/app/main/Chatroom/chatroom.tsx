@@ -113,33 +113,35 @@ const Chatroom = () => {
       // console.log(messag
       setMessages([...newMessages, { role: "assistant", content: message }]);
 
-      const responseAudio = await fetch("/api/GPTSpeechAudio", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: message,
-        }),
-      });
-
-      if (!responseAudio.ok) {
-        throw new Error("Error generating text or speech");
-      }
-
       if (audioOutput) {
-        const audioBlob = await responseAudio.blob();
-        const url = URL.createObjectURL(audioBlob);
+        const responseAudio = await fetch("/api/GPTSpeechAudio", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: message,
+          }),
+        });
 
-        if (audioUrl) URL.revokeObjectURL(audioUrl);
-        setAudioUrl(url);
+        if (!responseAudio.ok) {
+          throw new Error("Error generating text or speech");
+        }
 
-        const newAudio = new Audio(url);
-        setAudio(newAudio);
-        setIsPlaying(true);
+        if (audioOutput) {
+          const audioBlob = await responseAudio.blob();
+          const url = URL.createObjectURL(audioBlob);
 
-        newAudio.onended = () => setIsPlaying(false);
-        newAudio.play();
+          if (audioUrl) URL.revokeObjectURL(audioUrl);
+          setAudioUrl(url);
+
+          const newAudio = new Audio(url);
+          setAudio(newAudio);
+          setIsPlaying(true);
+
+          newAudio.onended = () => setIsPlaying(false);
+          newAudio.play();
+        }
       }
 
       // console.log(responseText);
@@ -154,29 +156,31 @@ const Chatroom = () => {
   };
 
   return (
-    <div className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center min-h-screen gap-16 py-40 px-20 w-full">
+    <div className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center
+     min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-20 w-full">
       <div className="flex flex-col w-full h-full justify-between">
+        <div className="flex flex-col">
+          <Switch
+            defaultSelected
+            size="lg"
+            isSelected={audioOutput}
+            onValueChange={setAudioOutput}
+            className="self-end pb-3"
+          >
+            <span className="text-gray-800">{audioOutput ? "Audio on" : "Audio off"}</span>
+          </Switch>
 
-        <Switch
-          defaultSelected
-          size="lg"
-          isSelected={audioOutput}
-          onValueChange={setAudioOutput}
-          className="self-end"
-        >
-          <span className="text-gray-800">{audioOutput ? "Audio on" : "Audio off"}</span>
-        </Switch>
-
-        <ChatBox
-          messages={messages}
-          isPlaying={isPlaying}
-          audioUrl={audioUrl}
-          handlePlayAudio={handlePlayAudio}
-        />
+          <ChatBox
+            messages={messages}
+            isPlaying={isPlaying}
+            audioUrl={audioUrl}
+            handlePlayAudio={handlePlayAudio}
+          />
+        </div>
 
         <div className="flex flex-col">
           <Input
-            className="rounded-full w-full my-10 bg-[#f4eee8] py-8 px-5 text-black text-xl
+            className="rounded-full w-full my-[3.5vw] sm:mt-10 sm:mb-3 bg-[#f4eee8] p-[5.5vw] sm:py-8 sm:px-5 text-black text-[3.5vw] sm:text-[1vw]
             border border-[#d4bba0] shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#d4bba0]" // Added border and shadow
             placeholder="anything you want to say..."
             disabled={listening || isLoading}
@@ -190,11 +194,11 @@ const Chatroom = () => {
           ></Input>
 
 
-          <div className="flex w-full justify-center">
+          <div className="flex w-full justify-center my-[2.5vw] sm:my-0">
             <Button
               onClick={listening ? stopRecording : startRecording}
               disabled={listening && speechRecognitionSupported}
-              className="p-10 py-8 mx-10 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] my-10 transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] transition-all duration-300"
             >
               {listening ? <MicOff /> : <Mic />}
             </Button>
@@ -202,7 +206,7 @@ const Chatroom = () => {
             <Button
               onClick={handleSendMessage}
               disabled={isLoading}
-              className="p-10 py-8 mx-10 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] my-10 transition-all duration-300 ease-in-out transform hover:scale-105"
+              className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] transition-all duration-300"
             >
               <SendIcon />
             </Button>

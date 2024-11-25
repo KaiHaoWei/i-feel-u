@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "regenerator-runtime/runtime";
 
 interface ChatBoxProps {
@@ -11,26 +11,48 @@ interface ChatBoxProps {
 const ChatBox: React.FC<ChatBoxProps> = ({ messages }) => {
   const [displayedMessages, setDisplayedMessages] =
     useState<{ role: "user" | "assistant"; content: string }[]>(messages);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // 滾動到底部函數
+  const scrollToBottom = () => {
+    if (containerRef.current) {
+      const lastMessageElement = containerRef.current.lastElementChild;
+      if (lastMessageElement) {
+        lastMessageElement.scrollIntoView({
+          behavior: "smooth", // 平滑滾動效果
+          block: "end", // 確保滾動到元素的底部
+        });
+      }
+    }
+  };
+
 
   useEffect(() => {
-    setDisplayedMessages(messages);
+    setDisplayedMessages(messages); // 更新顯示的訊息
+    setTimeout(() => {
+      scrollToBottom();
+    }, 100); // 100 毫秒的延遲，可以調整這個數值
   }, [messages]);
 
   return (
-    <div className="p-4 mt-4 bg-[#f4eee8]/80 rounded-3xl max-h-[50vh] overflow-y-auto w-full shadow-lg">
+    <div
+      ref={containerRef} // 綁定容器參考
+      className="p-4 bg-[#f4eee8]/10 border-1 border-[#d4bba0] rounded-3xl 
+    max-h-[50vh] overflow-y-auto w-full shadow-lg">
       {displayedMessages.map((message, index) => (
         <div
           key={index}
-          className={`mb-4 p-4 rounded-xl max-w-[40%] w-auto h-fit ${message.role === "user"
-              ? "bg-[#decdbb] text-black font-semibold self-end ml-auto"  // User message: Right-aligned
-              : "bg-[#6d5b47] text-white font-semibold self-start mr-auto"  // Assistant message: Left-aligned
+          className={`mb-4 p-4 rounded-xl max-w-[60%] sm:max-w-[40%] w-auto h-fit ${message.role === "user"
+            ? "bg-[#decdbb] text-black font-semibold self-end ml-auto"  // User message: Right-aligned
+            : "bg-[#6d5b47] text-white font-semibold self-start mr-auto"  // Assistant message: Left-aligned
             }`}
         >
           <span className="m-2 p-2">{message.content}</span>
         </div>
       ))}
+      {/* 在最後增加一個不可見的空 div */}
+      <div className="h-4"></div>
     </div>
-
 
   );
 };
