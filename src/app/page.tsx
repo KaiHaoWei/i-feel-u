@@ -7,20 +7,29 @@ import IFeelULogo from "@/../public/IFEELU_Logo_transparent.png";
 import { motion } from "framer-motion";
 
 export default function Home() {
+  // Animation Variants
+  const fadeUpVariants = {
+    initial: { opacity: 0, y: 30 },
+    animate: { opacity: 1, y: 0, transition: { duration: 1.2, ease: "easeOut" } },
+  };
+
+  const fadeInVariants = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: { duration: 1.2, ease: "easeOut" } },
+  };
+
   return (
     <motion.div
-      className="flex flex-col items-center h-screen gap-1 pt-10 px-[10vw] bg-[#F0E7DA]"
-      initial={{ opacity: 0, y: 50 }} // Start off-screen and faded out
-      animate={{ opacity: 1, y: 0 }} // Fade in and slide up
-      exit={{ opacity: 0, y: 50 }} // Slide down and fade out on exit
-      transition={{ duration: 0.8, ease: "easeInOut" }} // Smooth transition
+      className="flex flex-col items-center min-h-screen gap-1 pt-10 px-[10vw] bg-[#F0E7DA]"
+      initial="initial"
+      animate="animate"
+      exit="animate"
+      variants={fadeInVariants} // Apply fadeIn effect to the entire container
     >
       {/* Title box */}
       <motion.div
         className="flex justify-around items-center bg-white rounded-3xl px-[2.5vw] py-[2.5vw] shadow-lg w-full min-w-fit min-h-fit"
-        initial={{ scale: 0.8, opacity: 0 }} // Scale down and fade out initially
-        animate={{ scale: 1, opacity: 1 }} // Scale up and fade in
-        transition={{ duration: 1, ease: "easeOut" }} // Longer, smoother transition
+        variants={fadeUpVariants} // Apply fadeUp effect to the title box
       >
         <div className="flex flex-col w-2/5 items-start">
           <h1 className="text-[4.5vw] text-[#9a8980] bevan-regular sm:text-[3.5vw]">NEVER</h1>
@@ -36,23 +45,25 @@ export default function Home() {
 
       {/* Introduction */}
       <motion.div
-        className="flex justify-between items-center px-[1.5vw] w-full min-w-fit min-h-fit"
-        initial={{ x: -100, opacity: 0 }} // Slide in from left
-        animate={{ x: 0, opacity: 1 }} // Slide into view
-        transition={{ duration: 1, ease: "easeInOut" }} // Smooth transition
+        className="flex flex-col sm:flex-row justify-between items-center px-[1.5vw] w-full min-w-fit min-h-fit"
+        variants={fadeUpVariants} // Apply fadeUp effect to the introduction section
       >
         <div className="flex flex-col mx-[1.5vw]">
-          <h1 className="font-medium text-[2.5vw] my-5 text-amber-900 sm:text-[1.5vw]">
+          <motion.div
+            className="font-medium text-[2.5vw] my-5 text-amber-900 sm:text-[1.5vw]"
+            variants={fadeInVariants} // Apply fadeIn to the text
+          >
             你是否有過無法被理解，卻沒有可以傾訴的對象呢? 又或者，你遇到某件事情，但沒有可以分享的對象呢?
-          </h1>
-          <h1 className="font-semibold text-[2.5vw] my-5 text-amber-900 sm:text-[1.5vw]">
+          </motion.div>
+          <motion.div
+            className="font-semibold text-[2.5vw] my-5 text-amber-900 sm:text-[1.5vw]"
+            variants={fadeInVariants} // Apply fadeIn to the second text block
+          >
             那就來使用【I FEEL U】來抒發你內心的任何心情吧！
-          </h1>
+          </motion.div>
           <motion.div
             className="flex"
-            initial={{ opacity: 0, scale: 0.8 }} // Start smaller and faded
-            animate={{ opacity: 1, scale: 1 }} // Grow and fade in
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.5 }} // Delay for emphasis
+            variants={fadeUpVariants} // Apply fadeUp to the button group
           >
             <Link href="/main/Login">
               <Button className="mr-10 p-[3vw] py-[3.5vw] w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10 sm:p-8 sm:py-10">
@@ -72,20 +83,16 @@ export default function Home() {
               </Button>
             </Link>
           </motion.div>
-
         </div>
 
         <motion.div
-          className="w-full max-w-xl"
-          initial={{ scale: 0.5, opacity: 0 }} // Shrink and fade out
-          animate={{ scale: 1, opacity: 1 }} // Grow and fade in
-          transition={{ duration: 1, ease: "easeOut" }} // Smooth transition
+          className="w-[25vw]"
+          variants={fadeUpVariants} // Apply fadeUp effect to the image
         >
           <Image
             src={IFeelULogo}
-            width={450}
-            height={450}
             alt="I FEEL U 團隊"
+            className="w-full h-auto"
           />
         </motion.div>
       </motion.div>

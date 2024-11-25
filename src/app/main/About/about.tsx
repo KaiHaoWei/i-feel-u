@@ -6,26 +6,15 @@ import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 const About = () => {
-  // Page transition variants
-  const pageVariants = {
-    initial: { opacity: 0, y: 50 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -50 },
+
+  const fadeUpVariants = {
+    initial: { opacity: 0, y: 30 },
+    animate: { opacity: 1, y: 0, transition: { duration: 1.2, ease: "easeOut" } },
   };
 
-  const pageTransition = {
-    duration: 0.6,
-    ease: "easeInOut",
-  };
-
-  // Pop-out animation variants
-  const elementVariants = {
-    hidden: { opacity: 0, scale: 0.8 }, // Start smaller and invisible
-    visible: {
-      opacity: 1,
-      scale: 1, // Scale to normal size
-      transition: { duration: 0.5, ease: "easeInOut" },
-    },
+  const fadeInVariants = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: { duration: 1.2, ease: "easeOut" } },
   };
 
   // Button hover animation
@@ -48,18 +37,16 @@ const About = () => {
 
   return (
     <motion.div
-      className="flex bg-[#dfd6ce] items-center min-h-screen gap-16 sm:p-20 w-full"
-      variants={pageVariants}
+      className="flex flex-column bg-[#dfd6ce] items-center h-screen sm:gap-16 sm:p-10 w-full"
+      variants={fadeInVariants}
       initial="initial"
       animate="animate"
-      exit="exit"
-      transition={pageTransition}
+      exit="animate"
     >
       <motion.div
-        variants={elementVariants}
-        initial="hidden"
-        animate="visible"
-        transition={{ delay: 0.2 }}
+        variants={fadeUpVariants}
+      // initial="initial"
+      // animate="animate"
       >
         <Image
           src={IFeelULogo}
@@ -69,43 +56,37 @@ const About = () => {
         />
       </motion.div>
 
-      <div className="flex flex-col w-lvh h-full">
+      <div className="flex flex-col h-full">
         <motion.div
-          className="flex flex-col m-10 p-20"
-          variants={elementVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.4 }}
+          className="flex flex-col p-5"
+          variants={fadeUpVariants}
         >
-          <h1 className="text-9xl text-[#6d5b47] bevan-regular">ABOUT</h1>
-          <h1 className="text-9xl text-[#6d5b47] bevan-regular">I FEEL U</h1>
+          <h1 className="text-[6.5vw] text-[#6d5b47] bevan-regular">ABOUT</h1>
+          <h1 className="text-[6.5vw] text-[#6d5b47] bevan-regular">I FEEL U</h1>
         </motion.div>
 
         <motion.div
-          className="flex flex-col m-10 p-20"
-          variants={elementVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.6 }}
+          className="flex flex-col p-5"
+          variants={fadeUpVariants}
         >
-          <h1 className="font-semibold text-4xl my-10 text-[#6d5b47]">
+          <h1 className="font-semibold text-[3.5vw] sm:text-[2vw] my-5 text-[#6d5b47]">
             I Feel U
             是一款人性化聊天AI，可以透過文字輸入或者語音輸入來與其互動。
           </h1>
         </motion.div>
 
         <motion.div
-          className="flex ml-10 pl-20"
-          variants={elementVariants}
-          initial="hidden"
-          animate="visible"
-          transition={{ delay: 0.8 }}
+          className="flex ml-[1vw] pl-[1vw]"
+          variants={fadeUpVariants}
         >
-          <motion.div variants={buttonVariants} whileHover="hover">
+          <motion.div
+            variants={buttonVariants}
+            whileHover="hover"
+          >
             <Link href={`/`}>
-              <Button className="mr-10 p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
+              <Button className="mr-[5vw] p-[3.5vw] py-[2.5vw] w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
                 <motion.h1
-                  className="text-white font-semibold text-lg"
+                  className="text-white font-semibold text-[2.8vw] sm:text-[1.5vw]"
                   variants={linkVariants}
                   whileHover="hover"
                 >
@@ -117,9 +98,9 @@ const About = () => {
 
           <motion.div variants={buttonVariants} whileHover="hover">
             <Link href={`/main/Login`}>
-              <Button className="mr-10 p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
+              <Button className="mr-[5vw] p-[3.5vw] py-[2.5vw] sm:p-[2.5vw] w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10">
                 <motion.h1
-                  className="text-white font-semibold text-lg"
+                  className="text-white font-semibold text-[2.8vw] sm:text-[1.5vw]"
                   variants={linkVariants}
                   whileHover="hover"
                 >
