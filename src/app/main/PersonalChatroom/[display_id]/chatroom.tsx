@@ -231,33 +231,35 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
 
       setSaveNow(true);
 
-      const responseAudio = await fetch("/api/GPTSpeechAudio", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: message,
-        }),
-      });
-
-      if (!responseAudio.ok) {
-        throw new Error("Error generating text or speech");
-      }
-
       if (audioOutput) {
-        const audioBlob = await responseAudio.blob();
-        const url = URL.createObjectURL(audioBlob);
+        const responseAudio = await fetch("/api/GPTSpeechAudio", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            message: message,
+          }),
+        });
 
-        if (audioUrl) URL.revokeObjectURL(audioUrl);
-        setAudioUrl(url);
+        if (!responseAudio.ok) {
+          throw new Error("Error generating text or speech");
+        }
 
-        const newAudio = new Audio(url);
-        setAudio(newAudio);
-        setIsPlaying(true);
+        if (audioOutput) {
+          const audioBlob = await responseAudio.blob();
+          const url = URL.createObjectURL(audioBlob);
 
-        newAudio.onended = () => setIsPlaying(false);
-        newAudio.play();
+          if (audioUrl) URL.revokeObjectURL(audioUrl);
+          setAudioUrl(url);
+
+          const newAudio = new Audio(url);
+          setAudio(newAudio);
+          setIsPlaying(true);
+
+          newAudio.onended = () => setIsPlaying(false);
+          newAudio.play();
+        }
       }
 
       // console.log(responseText);
@@ -293,84 +295,118 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     }).format(date);
   }
 
+
   return (
     <div className="flex min-h-screen w-full">
-      {/* Sidebar 内容 */}
+
+      {/* Sidebar Content */}
       <div
-        className={`transition-width duration-300 ease-in-out bg-[#decdbb] py-10 px-6 overflow-hidden`}
+        className={`bg-[#decdbb] ${isSidebarOpen ? "fixed w-[60vw] sm:w-64" : "static w-20 sm:w-28"
+          } h-screen transition-all duration-300 flex flex-col py-4 px-2 shadow-lg
+          top-0 left-0 z-50 sm:static`}
       >
+        {/* Toggle Sidebar Button */}
         <Button
-          className="w-full hover:bg-[#f4eee8] bg-[#6d5b47] text-[#292628]"
+          className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] rounded-md 
+            p-2 mb-10 
+            transition-all duration-300`}
           onClick={toggleSidebar}
         >
           {isSidebarOpen ? "<<" : ">>"}
         </Button>
-        {isSidebarOpen && (
-          <div className="flex flex-col h-full pb-20">
-            <div className="flex-grow flex-col flex">
-              <Button
-                className="my-5 hover:bg-[#9a8980] bg-[#cbb9af] text-[#292628]"
-                onClick={() => {
-                  startNewChatroom();
-                }}
-              >
-                +
-              </Button>
-              {!isLoading &&
-                chatGroups.map((group) => (
-                  <Button
-                    key={group.displayId}
-                    className="my-5 hover:bg-[#9a8980] bg-[#cbb9af] text-[#292628] px-12 py-8"
-                    onClick={() => {
-                      setMessages(group.chat);
-                      setCurrentChatId(group.displayId);
-                    }}
-                  >
-                    <div className="flex flex-col">
-                      <h1>{group.title}</h1>
-                      <h1>{formatDate(group.createdAt)}</h1>
-                    </div>
-                  </Button>
-                ))}
-            </div>
-            <Link href={"/"}>
-              <Button className="w-full mb-10 hover:bg-[#f4eee8] bg-[#6d5b47] text-[#292628] self-end">
-                Home
-              </Button>
-            </Link>
+
+        {/* Sidebar Content */}
+        <div className="flex-grow flex flex-col space-y-4 overflow-y-auto py-4">
+          {/* New Chat Button */}
+          <Button
+            className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] p-2 rounded-md 
+              transition-all duration-300`}
+            onClick={startNewChatroom}
+          >
+            {isSidebarOpen ? "+ New Chat" : "+"}
+          </Button>
+
+          {/* Chat Groups */}
+          {
+            chatGroups.map((group) => (
+              <div key={group.displayId}>
+                <Button
+                  key={group.displayId}
+                  className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] rounded-md 
+                    transition-all duration-300 truncate w-full h-auto`}
+                  onClick={() => {
+                    setMessages(group.chat);
+                    setCurrentChatId(group.displayId);
+                  }}
+                >
+                  <div className="flex flex-col justify-start text-center truncate">
+                    {isSidebarOpen ? (
+                      <>
+                        <span className="text-sm">{group.title}</span>
+                        <span className="text-sm">
+                          {formatDate(group.createdAt)}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-sm">{group.title}</span>
+                    )}
+                  </div>
+                </Button>
+
+              </div>
+            ))}
+        </div>
+
+        {/* Footer Buttons */}
+        <div className="space-y-2">
+          <Link href={"/"}>
             <Button
-              className="w-full hover:bg-[#f4eee8] bg-[#6d5b47] text-[#292628] self-end"
-              onClick={handleLogout}
+              className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] p-2 rounded-md 
+                transition-all duration-300 w-full`}
             >
-              Sign Out
+              {isSidebarOpen ? "Home" : "🏠"}
             </Button>
-          </div>
-        )}
+          </Link>
+          <Button
+            className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] p-2 rounded-md 
+              transition-all duration-300 w-full`}
+            onClick={handleLogout}
+          >
+            {isSidebarOpen ? "Sign Out" : "🚪"}
+          </Button>
+        </div>
       </div>
 
+
       {/* Chatroom範圍 */}
-      <div className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center min-h-screen  gap-16 py-40 px-20 w-full">
+      <div className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center
+     min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-20 w-full">
         <div className="flex flex-col w-full h-full justify-between">
-          <Switch
-            defaultSelected
-            size="lg"
-            isSelected={audioOutput}
-            onValueChange={setAudioOutput}
-            className="self-end"
-          >
-            <span className=" text-[#6d5b47]">
-              {audioOutput ? "Audio on" : "Audio off"}
-            </span>
-          </Switch>
-          <ChatBox
-            messages={messages}
-            isPlaying={isPlaying}
-            audioUrl={audioUrl}
-            handlePlayAudio={handlePlayAudio}
-          />
+          <div className="flex flex-col">
+            <Switch
+              defaultSelected
+              size="lg"
+              isSelected={audioOutput}
+              onValueChange={setAudioOutput}
+              className="self-end"
+            >
+              <span className=" text-[#6d5b47]">
+                {audioOutput ? "Audio on" : "Audio off"}
+              </span>
+            </Switch>
+            <ChatBox
+              messages={messages}
+              isPlaying={isPlaying}
+              audioUrl={audioUrl}
+              handlePlayAudio={handlePlayAudio}
+            />
+          </div>
+
+
           <div className="flex flex-col">
             <Input
-              className="rounded-full w-full my-10 bg-[#f4eee8] py-8 text-black"
+              className="rounded-full w-full my-[3.5vw] sm:mt-10 sm:mb-3 bg-[#f4eee8] p-[5.5vw] sm:py-8 sm:px-5 text-black text-[3.5vw] sm:text-[1vw]
+              border border-[#d4bba0] shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#d4bba0]" // Added border and shadow
               placeholder="anything you want to say..."
               disabled={listening || isLoading}
               onChange={(e) => setInputValue(e.target.value)}
@@ -381,18 +417,21 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
                 }
               }}
             ></Input>
-            <div className="flex w-full justify-center">
+
+
+            <div className="flex w-full justify-center my-[2.5vw] sm:my-0">
               <Button
                 onClick={listening ? stopRecording : startRecording}
                 disabled={listening && speechRecognitionSupported}
-                className="p-10 py-8 mx-10 w-fit rounded-full hover:bg-[#f4eee8] bg-[#decdbb] my-10"
+                className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] transition-all duration-300"
               >
                 {listening ? <MicOff /> : <Mic />}
               </Button>
+
               <Button
                 onClick={handleSendMessage}
                 disabled={isLoading}
-                className="p-10 py-8 mx-10 w-fit rounded-full hover:bg-[#f4eee8] bg-[#decdbb] my-10"
+                className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] transition-all duration-300"
               >
                 {<SendIcon />}
               </Button>

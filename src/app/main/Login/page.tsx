@@ -98,7 +98,7 @@ const Page = () => {
         >
           {/* Title animation */}
           <motion.h1
-            className="sm:text-[10vw] sm:text-9xl text-[#6d5b47] bevan-regular"
+            className="text-[10vw] sm:text-9xl text-[#6d5b47] bevan-regular"
             initial={{ opacity: 0, x: -100 }} // Start with opacity 0 and slide in from left
             key={isSignUpMode ? "Sign Up" : "Sign In"} // Key to trigger re-render on mode change
             animate={{ opacity: 1, x: 0 }} // Animate to full opacity and default position

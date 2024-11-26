@@ -167,7 +167,9 @@ const Chatroom = () => {
             onValueChange={setAudioOutput}
             className="self-end pb-3"
           >
-            <span className="text-gray-800">{audioOutput ? "Audio on" : "Audio off"}</span>
+            <span className="text-gray-800">
+              {audioOutput ? "Audio on" : "Audio off"}
+            </span>
           </Switch>
 
           <ChatBox
