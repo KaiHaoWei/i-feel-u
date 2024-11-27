@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { motion } from "framer-motion"; // Importing framer-motion for animations
+import { Snackbar, Alert } from "@mui/material"; // Error Message
 
 interface CustomJwtPayload {
   display_id: string;
@@ -22,6 +23,9 @@ const Page = () => {
   const [userPassword, setUserPassword] = useState("");
   const [isSignUpMode, setIsSignUpMode] = useState(false); // State to toggle between Sign In and Sign Up
   const router = useRouter();
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
@@ -43,19 +47,25 @@ const Page = () => {
         userEmail: userEmail,
         userPassword: userPassword,
       });
-      alert("註冊成功！");
+      setIsSignUpMode(false);
+      setErrorMessage("Registration successful!"); // Feedback for success
+      setIsSnackbarOpen(true);
     } catch (error) {
       if (error instanceof Response) {
         try {
           const errorData = await error.json();
-          alert(`註冊失敗: ${errorData.error || "未知的錯誤"}`);
+          setErrorMessage(`Registration failed: ${errorData.error || "Unknown error"}`);
+          setIsSnackbarOpen(true);
         } catch {
-          alert("註冊失敗: 無法解析伺服器錯誤信息");
+          setErrorMessage("Registration failed: Unable to parse server error.");
+          setIsSnackbarOpen(true);
         }
       } else if (error instanceof Error) {
-        alert(`註冊失敗: ${error.message}`);
+        setErrorMessage(`Registration failed: ${error.message}`);
+        setIsSnackbarOpen(true);
       } else {
-        alert("註冊失敗: 發生未知錯誤");
+        setErrorMessage("Registration failed: An unknown error occurred.");
+        setIsSnackbarOpen(true);
       }
     } finally {
       setUserEmail("");
@@ -75,11 +85,17 @@ const Page = () => {
         localStorage.setItem("authToken", token);
         router.push(`/main/PersonalChatroom/${response.message}`);
       } else {
-        alert("Login failed: No token received.");
+        setErrorMessage("Login failed: No token received.");
+        setIsSnackbarOpen(true);
       }
     } catch (error) {
-      alert(`Login failed: ${error}`);
+      setErrorMessage(`Login failed: ${error}`);
+      setIsSnackbarOpen(true);
     }
+  };
+
+  const handleCloseSnackbar = () => {
+    setIsSnackbarOpen(false);
   };
 
   return (
@@ -89,7 +105,7 @@ const Page = () => {
       animate={{ opacity: 1, x: 0 }} // Animate to full opacity and default x position
       transition={{ duration: 0.8, ease: "easeOut" }} // Smooth transition
     >
-      <div className="flex w-full h-fit justify-between">
+      <div className="flex flex-col w-full h-fit justify-between sm:flex-row">
         <motion.div
           className="flex flex-col sm:m-10 sm:p-20 items-center justify-center"
           initial={{ scale: 0.5, opacity: 0 }} // Start with smaller size and hidden
@@ -109,7 +125,7 @@ const Page = () => {
         </motion.div>
 
         {/* Container for input fields and buttons */}
-        <div className="flex flex-col sm:m-10 sm:p-20 w-1/2">
+        <div className="flex flex-col m-[2vw] my-[4vw] sm:m-10 sm:p-20 sm:w-full">
           {/* Animated Input Fields */}
           <motion.div
             className="flex flex-col items-center"
@@ -118,7 +134,7 @@ const Page = () => {
             transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }} // Smooth transition for inputs
           >
             <Input
-              className="w-full bg-white rounded-full my-10 text-black"
+              className="w-full bg-white rounded-full my-[4vw] sm:my-[2.5vw] text-black"
               placeholder="E-mail"
               type="text"
               value={userEmail}
@@ -128,7 +144,7 @@ const Page = () => {
             />
 
             <Input
-              className="w-full bg-white rounded-full my-10 text-black"
+              className="w-full bg-white rounded-full my-[4vw] sm:my-[2.5vw] text-black"
               placeholder="Password (8-20 characters)"
               type="password"
               value={userPassword}
@@ -146,52 +162,60 @@ const Page = () => {
             animate={{ y: 0, opacity: 1 }} // Animate to original position and full opacity
             transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }} // Smooth transition for the button
           >
-            <Button
-              className="p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10 mr-10"
-              onClick={isSignUpMode ? handleRegister : handleLogin}
-            >
-              <h1 className="text-white font-semibold text-lg">
-                {isSignUpMode ? "Sign Up" : "Sign In"}
-              </h1>
-            </Button>
+            <div className="flex flex-row justify-around">
+              <Button
+                className="m-[6vw] p-[5vw] sm:m-10 sm:p-10 sm:py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] sm:text-lg font-bold"
+                onClick={isSignUpMode ? handleRegister : handleLogin}
+              >
+                <h1 className="text-white font-semibold sm:text-lg">
+                  {isSignUpMode ? "Sign Up" : "Sign In"}
+                </h1>
+              </Button>
+
+              {/* Back to Home Button */}
+              <Link href="/">
+                <Button className="m-[6vw] p-[5vw] sm:m-10 sm:p-10 sm:py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] sm:text-lg font-bold
+                ">
+                  {`回到首頁`}
+                </Button>
+              </Link>
+            </div>
 
             {/* Toggle text to switch between Sign In and Sign Up */}
-            <motion.p
+            <p
               className="text-black font-semibold text-lg my-4"
-              initial={{ opacity: 0 }} // Start hidden
-              key={isSignUpMode ? "Sign Up" : "Sign In"} // Key to trigger re-render on mode change
-              animate={{ opacity: 1 }} // Fade in text
-              transition={{ duration: 0.5 }}
             >
               {isSignUpMode ? "Already have an account?" : "Don't have an account?"}
               <span
-                className="text-[#6d5b47] cursor-pointer ml-2"
+                className="text-[#6d5b47] cursor-pointer ml-2 hover:underline"
                 onClick={() => setIsSignUpMode(!isSignUpMode)} // Toggle between Sign In and Sign Up
               >
                 {isSignUpMode ? "Sign In" : "Sign Up"}
               </span>
-            </motion.p>
+            </p>
 
             <Link className="no-underline hover:underline text-black" href="/main/Chatroom">
               {`Continue without signing in (no records will be saved)`}
             </Link>
 
-            {/* Back to Home Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 50 }} // Start below and hidden
-              animate={{ opacity: 1, y: 0 }} // Animate to original position and full opacity
-              transition={{ duration: 0.6, ease: "easeOut" }} // Smooth transition for the button
-            >
-              <Link className="no-underline hover:underline text-black" href="/">
-                <Button className="p-10 py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] my-10 mr-10 text-lg font-bold">
-                  {`回到首頁`}
-                </Button>
-              </Link>
-            </motion.div>
+
           </motion.div>
 
         </div>
       </div>
+      <>
+      {/* Snackbar for error messages */}
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={4000} // Automatically hide after 4 seconds
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }} // Position on the screen
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+      </>
     </motion.div>
   );
 };

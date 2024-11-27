@@ -28,7 +28,7 @@ export default function useLogin() {
       if (!res.ok) {
         const body = await res.json();
         setErrorMessage(body.error);
-        console.error("Login API error:", body.error); // 打印錯誤訊息
+        // console.error("Login API error:", body.error); // 打印錯誤訊息
         throw new Error(body.error);
       }
 
@@ -37,7 +37,7 @@ export default function useLogin() {
       return responseBody;
     } catch (error) {
       // 在這裡捕獲任何錯誤，並將錯誤訊息顯示出來
-      console.error("Login failed:", error);
+      // console.error("Login failed:", error);
       setErrorMessage(
         error instanceof Error ? error.message : "An unknown error occurred"
       );

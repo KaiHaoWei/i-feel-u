@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 
 import { db } from "@/db";
 import { userTable } from "@/db/schema";
+import { eq } from "drizzle-orm";
 
 const postUserRequestSchema = z.object({
   userEmail: z
@@ -44,10 +45,21 @@ export async function POST(request: NextRequest) {
     );
   }
 
+  const [user] = await db
+      .select({
+        userEmail: userTable.userEmail,
+      })
+      .from(userTable)
+      .where(eq(userTable.userEmail, userEmail));
+
+  if(user){
+    return NextResponse.json({ error: "The E-mail already registered" }, { status: 400 });
+  }
+
   try {
     const hashedPassword = await bcrypt.hash(userPassword, 10);
 
-    const [userRegistration] = await db
+    await db
       .insert(userTable)
       .values({
         userEmail,
