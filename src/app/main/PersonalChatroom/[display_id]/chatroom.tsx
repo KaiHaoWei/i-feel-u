@@ -396,9 +396,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
             </Switch>
             <ChatBox
               messages={messages}
-              isPlaying={isPlaying}
-              audioUrl={audioUrl}
-              handlePlayAudio={handlePlayAudio}
+              isLoading={isLoading}
             />
           </div>
 

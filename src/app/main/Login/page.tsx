@@ -128,7 +128,7 @@ const Page = () => {
         <div className="flex flex-col m-[2vw] my-[4vw] sm:m-10 sm:p-20 sm:w-full">
           {/* Animated Input Fields */}
           <motion.div
-            className="flex flex-col items-center"
+            className="flex flex-col items-center px-[15vw] sm:px-0"
             initial={{ opacity: 0, y: 50 }} // Start below and hidden
             animate={{ opacity: 1, y: 0 }} // Animate to original position and full opacity
             transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }} // Smooth transition for inputs

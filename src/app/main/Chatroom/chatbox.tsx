@@ -3,14 +3,13 @@ import "regenerator-runtime/runtime";
 
 interface ChatBoxProps {
   messages: { role: "user" | "assistant"; content: string }[];
-  handlePlayAudio?: () => void;
-  audioUrl: string | null;
-  isPlaying: boolean;
+  isLoading: boolean;
 }
 
-const ChatBox: React.FC<ChatBoxProps> = ({ messages }) => {
+const ChatBox: React.FC<ChatBoxProps> = ({ messages, isLoading }) => {
   const [displayedMessages, setDisplayedMessages] =
     useState<{ role: "user" | "assistant"; content: string }[]>(messages);
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   // 滾動到底部函數
@@ -26,7 +25,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messages }) => {
     }
   };
 
-
+  // delay the message sent so that the scroll animation have time
+  // Used when No animation 
   useEffect(() => {
     setDisplayedMessages(messages); // 更新顯示的訊息
     setTimeout(() => {
@@ -47,11 +47,20 @@ const ChatBox: React.FC<ChatBoxProps> = ({ messages }) => {
             : "bg-[#6d5b47] text-white font-semibold self-start mr-auto"  // Assistant message: Left-aligned
             }`}
         >
-          <span className="m-2 p-2">{message.content}</span>
+            <span className="m-2 p-2">{message.content}</span>
         </div>
       ))}
+
+      {/* Loading animation when isLoading is true */}
+      {isLoading && (
+        <div className="flex justify-center items-center mt-2">
+          <div className="w-6 h-6 border-4 border-t-[#6d5b47] border-[#d4bba0] rounded-full animate-spin"></div>
+          <span className="ml-2 text-[#6d5b47]">Loading...</span>
+        </div>
+      )}
+
       {/* 在最後增加一個不可見的空 div */}
-      <div className="h-4"></div>
+      <div className="h-[1vw]"></div>
     </div>
 
   );

@@ -110,9 +110,10 @@ const Chatroom = () => {
 
       const dataText = await responseText.json();
       const message = dataText.message;
-      // console.log(messag
+
       setMessages([...newMessages, { role: "assistant", content: message }]);
 
+      // Audio
       if (audioOutput) {
         const responseAudio = await fetch("/api/GPTSpeechAudio", {
           method: "POST",
@@ -174,9 +175,7 @@ const Chatroom = () => {
 
           <ChatBox
             messages={messages}
-            isPlaying={isPlaying}
-            audioUrl={audioUrl}
-            handlePlayAudio={handlePlayAudio}
+            isLoading={isLoading}
           />
         </div>
 

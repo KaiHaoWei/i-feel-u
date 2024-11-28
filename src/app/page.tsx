@@ -56,7 +56,7 @@ export default function Home() {
             你是否有過無法被理解，卻沒有可以傾訴的對象呢? 又或者，你遇到某件事情，但沒有可以分享的對象呢?
           </motion.div>
           <motion.div
-            className="font-semibold text-[2.5vw] my-5 text-amber-900 sm:text-[1.5vw]"
+            className="font-semibold text-[2.5vw] my-1 sm:my-5 text-amber-900 sm:text-[1.5vw]"
             variants={fadeInVariants} // Apply fadeIn to the second text block
           >
             那就來使用【I FEEL U】來抒發你內心的任何心情吧！
