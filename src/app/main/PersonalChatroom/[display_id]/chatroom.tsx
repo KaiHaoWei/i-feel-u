@@ -13,6 +13,7 @@ import { Switch } from "@nextui-org/switch";
 import { useRouter } from "next/navigation";
 import { UUID } from "crypto";
 import Link from "next/link";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 interface ChatroomProps {
   displayId: string; // 接收父组件传递的 displayId
@@ -139,6 +140,26 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
       }
     } catch (error) {
       console.error("Failed to get chat records", error);
+    }
+    setIsLoading(false);
+  };
+
+  const handleDeleteChat = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/UserChatDelete", {
+        method: "PUT",
+        body: JSON.stringify({
+          display_id: currentChatId,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to delete chat");
+      }
+      const result = await response.json();
+      window.location.reload();
+    } catch (error) {
+      console.error("Failed to get delete chat", error);
     }
     setIsLoading(false);
   };
@@ -295,14 +316,13 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     }).format(date);
   }
 
-
   return (
     <div className="flex min-h-screen w-full">
-
       {/* Sidebar Content */}
       <div
-        className={`bg-[#decdbb] ${isSidebarOpen ? "fixed w-[60vw] sm:w-64" : "static w-20 sm:w-28"
-          } h-screen transition-all duration-300 flex flex-col py-4 px-2 shadow-lg
+        className={`bg-[#decdbb] ${
+          isSidebarOpen ? "fixed w-[60vw] sm:w-64" : "static w-20 sm:w-28"
+        } h-screen transition-all duration-300 flex flex-col py-4 px-2 shadow-lg
           top-0 left-0 z-50 sm:static`}
       >
         {/* Toggle Sidebar Button */}
@@ -327,34 +347,34 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
           </Button>
 
           {/* Chat Groups */}
-          {
-            chatGroups.map((group) => (
-              <div key={group.displayId}>
-                <Button
-                  key={group.displayId}
-                  className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] rounded-md 
+          {chatGroups.map((group) => (
+            <div key={group.displayId}>
+              <Button
+                key={group.displayId}
+                className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] rounded-md 
                     transition-all duration-300 truncate w-full h-auto`}
-                  onClick={() => {
-                    setMessages(group.chat);
-                    setCurrentChatId(group.displayId);
-                  }}
-                >
-                  <div className="flex flex-col justify-start text-center truncate">
-                    {isSidebarOpen ? (
-                      <>
+                onClick={() => {
+                  setMessages(group.chat);
+                  setCurrentChatId(group.displayId);
+                }}
+              >
+                <div className="flex justify-start text-center truncate">
+                  {isSidebarOpen ? (
+                    <>
+                      <div className="flex flex-col">
                         <span className="text-sm">{group.title}</span>
                         <span className="text-sm">
                           {formatDate(group.createdAt)}
                         </span>
-                      </>
-                    ) : (
-                      <span className="text-sm">{group.title}</span>
-                    )}
-                  </div>
-                </Button>
-
-              </div>
-            ))}
+                      </div>
+                    </>
+                  ) : (
+                    <span className="text-sm">{group.title}</span>
+                  )}
+                </div>
+              </Button>
+            </div>
+          ))}
         </div>
 
         {/* Footer Buttons */}
@@ -377,10 +397,11 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
         </div>
       </div>
 
-
       {/* Chatroom範圍 */}
-      <div className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center
-     min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-20 w-full">
+      <div
+        className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center
+     min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-20 w-full"
+      >
         <div className="flex flex-col w-full h-full justify-between">
           <div className="flex flex-col">
             <Switch
@@ -394,12 +415,8 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
                 {audioOutput ? "Audio on" : "Audio off"}
               </span>
             </Switch>
-            <ChatBox
-              messages={messages}
-              isLoading={isLoading}
-            />
+            <ChatBox messages={messages} isLoading={isLoading} />
           </div>
-
 
           <div className="flex flex-col">
             <Input
@@ -416,11 +433,11 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
               }}
             ></Input>
 
-
             <div className="flex w-full justify-center my-[2.5vw] sm:my-0">
               <Button
                 onClick={listening ? stopRecording : startRecording}
                 disabled={listening && speechRecognitionSupported}
+                title="Start talking"
                 className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] transition-all duration-300"
               >
                 {listening ? <MicOff /> : <Mic />}
@@ -429,9 +446,18 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
               <Button
                 onClick={handleSendMessage}
                 disabled={isLoading}
+                title="Send"
                 className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] transition-all duration-300"
               >
                 {<SendIcon />}
+              </Button>
+              <Button
+                onClick={handleDeleteChat}
+                disabled={isLoading}
+                title="Delete the chat"
+                className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#e67764] bg-[#f05c41] transition-all duration-300"
+              >
+                <DeleteForeverIcon />
               </Button>
             </div>
           </div>
