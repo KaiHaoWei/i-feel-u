@@ -49,7 +49,7 @@ const Page = () => {
       });
       setIsSignUpMode(false);
       alert("Registration successful!"); // Feedback for success
-      setIsSnackbarOpen(true);
+      setIsSnackbarOpen(false);
     } catch (error) {
       if (error instanceof Response) {
         try {
