@@ -48,8 +48,8 @@ const Page = () => {
         userPassword: userPassword,
       });
       setIsSignUpMode(false);
-      alert("Registration successful!"); // Feedback for success
-      setIsSnackbarOpen(false);
+      setErrorMessage("Registration successful!"); // Feedback for success
+      setIsSnackbarOpen(true);
     } catch (error) {
       if (error instanceof Response) {
         try {
@@ -217,7 +217,7 @@ const Page = () => {
         >
           <Alert
             onClose={handleCloseSnackbar}
-            severity="error"
+            severity="info"
             sx={{ width: "100%" }}
           >
             {errorMessage}
