@@ -48,13 +48,15 @@ const Page = () => {
         userPassword: userPassword,
       });
       setIsSignUpMode(false);
-      setErrorMessage("Registration successful!"); // Feedback for success
+      alert("Registration successful!"); // Feedback for success
       setIsSnackbarOpen(true);
     } catch (error) {
       if (error instanceof Response) {
         try {
           const errorData = await error.json();
-          setErrorMessage(`Registration failed: ${errorData.error || "Unknown error"}`);
+          setErrorMessage(
+            `Registration failed: ${errorData.error || "Unknown error"}`
+          );
           setIsSnackbarOpen(true);
         } catch {
           setErrorMessage("Registration failed: Unable to parse server error.");
@@ -174,18 +176,20 @@ const Page = () => {
 
               {/* Back to Home Button */}
               <Link href="/">
-                <Button className="m-[6vw] p-[5vw] sm:m-10 sm:p-10 sm:py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] sm:text-lg font-bold
-                ">
+                <Button
+                  className="m-[6vw] p-[5vw] sm:m-10 sm:p-10 sm:py-8 w-fit rounded-full hover:bg-[#6d5b47] bg-[#9a8980] sm:text-lg font-bold
+                "
+                >
                   {`回到首頁`}
                 </Button>
               </Link>
             </div>
 
             {/* Toggle text to switch between Sign In and Sign Up */}
-            <p
-              className="text-black font-semibold text-lg my-4"
-            >
-              {isSignUpMode ? "Already have an account?" : "Don't have an account?"}
+            <p className="text-black font-semibold text-lg my-4">
+              {isSignUpMode
+                ? "Already have an account?"
+                : "Don't have an account?"}
               <span
                 className="text-[#6d5b47] cursor-pointer ml-2 hover:underline"
                 onClick={() => setIsSignUpMode(!isSignUpMode)} // Toggle between Sign In and Sign Up
@@ -194,27 +198,31 @@ const Page = () => {
               </span>
             </p>
 
-            <Link className="no-underline hover:underline text-black" href="/main/Chatroom">
+            <Link
+              className="no-underline hover:underline text-black"
+              href="/main/Chatroom"
+            >
               {`Continue without signing in (no records will be saved)`}
             </Link>
-
-
           </motion.div>
-
         </div>
       </div>
       <>
-      {/* Snackbar for error messages */}
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={4000} // Automatically hide after 4 seconds
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }} // Position on the screen
-      >
-        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: "100%" }}>
-          {errorMessage}
-        </Alert>
-      </Snackbar>
+        {/* Snackbar for error messages */}
+        <Snackbar
+          open={isSnackbarOpen}
+          autoHideDuration={4000} // Automatically hide after 4 seconds
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }} // Position on the screen
+        >
+          <Alert
+            onClose={handleCloseSnackbar}
+            severity="error"
+            sx={{ width: "100%" }}
+          >
+            {errorMessage}
+          </Alert>
+        </Snackbar>
       </>
     </motion.div>
   );
