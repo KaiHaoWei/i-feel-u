@@ -454,7 +454,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
               <Button
                 onClick={handleDeleteChat}
                 disabled={isLoading}
-                title="Delete the chat"
+                title="Delete the whole chat (permanantly)"
                 className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#e67764] bg-[#f05c41] transition-all duration-300"
               >
                 <DeleteForeverIcon />
