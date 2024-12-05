@@ -102,7 +102,7 @@ const Page = () => {
 
   return (
     <motion.div
-      className="flex bg-[#dfd6ce] items-center min-h-screen gap-16 sm:px-20 sm:py-0 w-full"
+      className="flex bg-gradient-to-r from-[#ffefba] to-[#d9a77d] items-center min-h-screen gap-16 sm:px-20 sm:py-0 w-full"
       initial={{ opacity: 0, x: -100 }} // Start with opacity 0 and from the left
       animate={{ opacity: 1, x: 0 }} // Animate to full opacity and default x position
       transition={{ duration: 0.8, ease: "easeOut" }} // Smooth transition

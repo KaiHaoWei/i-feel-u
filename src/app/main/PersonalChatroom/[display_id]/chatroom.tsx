@@ -15,6 +15,8 @@ import { UUID } from "crypto";
 import Link from "next/link";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
+import { motion, AnimatePresence } from "framer-motion";
+
 interface ChatroomProps {
   displayId: string; // 接收父组件传递的 displayId
 }
@@ -53,6 +55,12 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
   ); // null or boolean
   const [audioOutput, setAudioOutput] = useState(true);
 
+  // User Mood
+  const [userMood, setUserMood] = useState<string>('');
+  const [backgroundImage, setBackgroundImage] = useState<string>(""); // 新增背景圖片狀態
+  // Background animation control
+  const [displayedBackground, setDisplayedBackground] = useState<string>("");
+
   // TTS
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -68,6 +76,39 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
       setIsPlaying(true);
     }
   };
+
+  // 動態背景圖片更新
+  useEffect(() => {
+    switch (userMood) {
+      case "開朗":
+        setBackgroundImage("/happy.jpg");
+        break;
+      case "難過":
+        setBackgroundImage("/sad.jpg");
+        break;
+      case "生氣":
+        setBackgroundImage("/angry.jpg");
+        break;
+      case "困惑":
+        setBackgroundImage("/confuse.jpg");
+        break;
+      case "不確定":
+        setBackgroundImage("");
+        break;
+      default:
+        setBackgroundImage(""); // 保持原始背景
+    }
+  }, [userMood]);
+
+  // Animate the background change every 10 seconds
+  useEffect(() => {
+
+    const interval = setTimeout(() => {
+      setDisplayedBackground(backgroundImage);
+    }, 5000);
+
+    return () => clearTimeout(interval);
+  }, [backgroundImage]);
 
   const handleLogout = async () => {
     try {
@@ -252,6 +293,24 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
 
       setSaveNow(true);
 
+      // Mood
+      const responseMood = await fetch("/api/GPTGetMood", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: newMessages,
+        }),
+      });
+
+      const dataMood = await responseMood.json();
+      const mood = dataMood.message;
+
+      setUserMood(mood);
+
+      // Audio
       if (audioOutput) {
         const responseAudio = await fetch("/api/GPTSpeechAudio", {
           method: "POST",
@@ -320,9 +379,8 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     <div className="flex min-h-screen w-full">
       {/* Sidebar Content */}
       <div
-        className={`bg-[#decdbb] ${
-          isSidebarOpen ? "fixed w-[60vw] sm:w-64" : "static w-20 sm:w-28"
-        } h-screen transition-all duration-300 flex flex-col py-4 px-2 shadow-lg
+        className={`bg-[#decdbb] ${isSidebarOpen ? "fixed w-[60vw] sm:w-64" : "static w-20 sm:w-28"
+          } h-screen transition-all duration-300 flex flex-col py-4 px-2 shadow-lg
           top-0 left-0 z-50 sm:static`}
       >
         {/* Toggle Sidebar Button */}
@@ -398,11 +456,58 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
       </div>
 
       {/* Chatroom範圍 */}
-      <div
+      <motion.div
         className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center
      min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-20 w-full"
+        initial={{
+          opacity: 0,
+          scale: 0.8, // Start smaller for the "center-out" effect
+        }}
+        animate={{
+          opacity: 1,
+          scale: 1, // Scale to full size
+        }}
+        transition={{
+          duration: 0.5, // Adjust duration for slower emergence
+          ease: [0.25, 0.8, 0.25, 1], // Easing for smooth scaling
+        }}
+      // style={{
+      //   backgroundImage: displayedBackground ?
+      //     `linear-gradient(to right, rgba(244, 238, 232, 0.6), rgba(250, 240, 218, 0.75), rgba(255, 242, 201, 0.95), rgba(250, 240, 218, 0.75), rgba(253, 225, 194, 0.6)), url(${displayedBackground})` :
+      //     `linear-gradient(to right, #E7C890, #f4eee8, #fff2c9, #fde1c2, #E7C890)`,
+      //   backgroundSize: displayedBackground ? "cover" : "initial",
+      //   backgroundPosition: "center",
+      // }}
       >
-        <div className="flex flex-col w-full h-full justify-between">
+        {/* Background image transition */}
+      <AnimatePresence>
+        <motion.div
+          key={displayedBackground}
+          style={{
+            backgroundImage: displayedBackground
+              ? `linear-gradient(to right, rgba(253, 2225, 194, 0.45), rgba(250, 240, 218, 0.75), rgba(255, 242, 201, 0.95), rgba(250, 240, 218, 0.75), rgba(253, 225, 194, 0.45)), url(${displayedBackground})`
+              : `linear-gradient(to right, #E7C890, #f4eee8, #fff2c9, #fde1c2, #E7C890)`,
+            backgroundSize: displayedBackground ? "cover" : "initial",
+            backgroundPosition: "center",
+          }}
+          className="absolute top-0 left-0 w-full h-full z-0"
+          initial={{
+            opacity: 0.75,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0.75, // Fade out to 75% opacity on exit
+          }}
+          transition={{
+            duration: displayedBackground ? 4 : 0.5, // Adjust this duration for the background transition
+            ease: "easeInOut",
+          }}
+        />
+      </AnimatePresence>
+
+        <div className="flex flex-col w-full h-full justify-between z-10">
           <div className="flex flex-col">
             <Switch
               defaultSelected
@@ -462,7 +567,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -13,6 +13,8 @@ import { Switch } from "@nextui-org/switch";
 
 import Link from 'next/link';
 
+import { motion, AnimatePresence } from "framer-motion";
+
 const gptModel =
   "ft:gpt-4o-mini-2024-07-18:national-taiwan-university:1020qa-1106gptcon:AQUthpnV";
 
@@ -37,6 +39,12 @@ const Chatroom = () => {
   ); // null or boolean
   const [audioOutput, setAudioOutput] = useState(true);
 
+  // User Mood
+  const [userMood, setUserMood] = useState<string>('');
+  const [backgroundImage, setBackgroundImage] = useState<string>(""); // 新增背景圖片狀態
+  // Background animation control
+  const [displayedBackground, setDisplayedBackground] = useState<string>("");
+
   // TTS
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -49,6 +57,39 @@ const Chatroom = () => {
       setIsPlaying(true);
     }
   };
+
+  // 動態背景圖片更新
+  useEffect(() => {
+    switch (userMood) {
+      case "開朗":
+        setBackgroundImage("/happy.jpg");
+        break;
+      case "難過":
+        setBackgroundImage("/sad.jpg");
+        break;
+      case "生氣":
+        setBackgroundImage("/angry.jpg");
+        break;
+      case "困惑":
+        setBackgroundImage("/confuse.jpg");
+        break;
+      case "不確定":
+        setBackgroundImage("");
+        break;
+      default:
+        setBackgroundImage(""); // 保持原始背景
+    }
+  }, [userMood]);
+
+  // Animate the background change every 10 seconds
+  useEffect(() => {
+
+    const interval = setTimeout(() => {
+      setDisplayedBackground(backgroundImage);
+    }, 5000);
+
+    return () => clearTimeout(interval);
+  }, [backgroundImage]);
 
   // Stop playing if New Voice is return
   useEffect(() => {
@@ -113,6 +154,23 @@ const Chatroom = () => {
 
       setMessages([...newMessages, { role: "assistant", content: message }]);
 
+      // Mood
+      const responseMood = await fetch("/api/GPTGetMood", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          messages: newMessages,
+        }),
+      });
+
+      const dataMood = await responseMood.json();
+      const mood = dataMood.message;
+
+      setUserMood(mood);
+
       // Audio
       if (audioOutput) {
         const responseAudio = await fetch("/api/GPTSpeechAudio", {
@@ -157,9 +215,59 @@ const Chatroom = () => {
   };
 
   return (
-    <div className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center
-     min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-20 w-full">
-      <div className="flex flex-col w-full h-full justify-between">
+
+    <motion.div
+      className={`flex items-center min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-40 w-full`}
+      initial={{
+        opacity: 0,
+        scale: 0.8, // Start smaller for the "center-out" effect
+      }}
+      animate={{
+        opacity: 1,
+        scale: 1, // Scale to full size
+      }}
+      transition={{
+        duration: 0.5, // Adjust duration for slower emergence
+        ease: [0.25, 0.8, 0.25, 1], // Easing for smooth scaling
+      }}
+    // style={{
+    //   backgroundImage: displayedBackground ?
+    //     `linear-gradient(to right, rgba(244, 238, 232, 0.6), rgba(250, 240, 218, 0.75), rgba(255, 242, 201, 0.95), rgba(250, 240, 218, 0.75), rgba(253, 225, 194, 0.6)), url(${displayedBackground})` :
+    //     `linear-gradient(to right, #E7C890, #f4eee8, #fff2c9, #fde1c2, #E7C890)`,
+    //   backgroundSize: displayedBackground ? "cover" : "initial",
+    //   backgroundPosition: "center",
+    // }}
+    >
+      {/* Background image transition */}
+      <AnimatePresence>
+        <motion.div
+          key={displayedBackground}
+          style={{
+            backgroundImage: displayedBackground
+              ? `linear-gradient(to right, rgba(253, 2225, 194, 0.45), rgba(250, 240, 218, 0.75), rgba(255, 242, 201, 0.95), rgba(250, 240, 218, 0.75), rgba(253, 225, 194, 0.45)), url(${displayedBackground})`
+              : `linear-gradient(to right, #E7C890, #f4eee8, #fff2c9, #fde1c2, #E7C890)`,
+            backgroundSize: displayedBackground ? "cover" : "initial",
+            backgroundPosition: "center",
+          }}
+          className="absolute top-0 left-0 w-full h-full z-0"
+          initial={{
+            opacity: 0.75,
+          }}
+          animate={{
+            opacity: 1,
+          }}
+          exit={{
+            opacity: 0.75, // Fade out to 75% opacity on exit
+          }}
+          transition={{
+            duration: displayedBackground ? 4 : 0.5, // Adjust this duration for the background transition
+            ease: "easeInOut",
+          }}
+        />
+      </AnimatePresence>
+
+      <div className="flex flex-col w-full h-full justify-between z-10">
+        {/* <div className="text-black">aa{userMood}aa</div> */}
         <div className="flex flex-col">
           <Switch
             defaultSelected
@@ -222,9 +330,7 @@ const Chatroom = () => {
           </div>
         </div>
       </div>
-    </div>
-
-
+    </motion.div>
 
   );
 };
