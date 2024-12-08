@@ -267,7 +267,7 @@ const Chatroom = () => {
         />
       </AnimatePresence>
 
-      <div className="flex flex-col w-full h-full justify-around z-10">
+      <div className="flex flex-col w-full h-full sm:justify-around z-10">
         {/* <div className="text-black">aa{userMood}aa</div> */}
         <div className="flex flex-col">
           <Switch
