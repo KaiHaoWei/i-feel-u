@@ -379,8 +379,8 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     <div className="flex min-h-screen w-full">
       {/* Sidebar Content */}
       <div
-        className={`bg-[#decdbb] ${isSidebarOpen ? "fixed w-[60vw] sm:w-64" : "static w-20 sm:w-28"
-          } h-screen transition-all duration-300 flex flex-col py-4 px-2 shadow-lg
+        className={`sm:bg-[#decdbb] ${isSidebarOpen ? "bg-[#decdbb] fixed w-[60vw] h-full sm:h-auto sm:w-64" : "fixed w-20 sm:w-28"
+          } transition-all duration-300 flex flex-col py-4 px-2 shadow-lg
           top-0 left-0 z-50 sm:static`}
       >
         {/* Toggle Sidebar Button */}
@@ -393,72 +393,81 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
           {isSidebarOpen ? "<<" : ">>"}
         </Button>
 
-        {/* Sidebar Content */}
-        <div className="flex-grow flex flex-col space-y-4 overflow-y-auto py-4">
-          {/* New Chat Button */}
-          <Button
-            className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] p-2 rounded-md 
-              transition-all duration-300`}
-            onClick={startNewChatroom}
-          >
-            {isSidebarOpen ? "+ New Chat" : "+"}
-          </Button>
-
-          {/* Chat Groups */}
-          {chatGroups.map((group) => (
-            <div key={group.displayId}>
-              <Button
-                key={group.displayId}
-                className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] rounded-md 
-                    transition-all duration-300 truncate w-full h-auto`}
-                onClick={() => {
-                  setMessages(group.chat);
-                  setCurrentChatId(group.displayId);
-                }}
-              >
-                <div className="flex justify-start text-center truncate">
-                  {isSidebarOpen ? (
-                    <>
-                      <div className="flex flex-col">
-                        <span className="text-sm">{group.title}</span>
-                        <span className="text-sm">
-                          {formatDate(group.createdAt)}
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    <span className="text-sm">{group.title}</span>
-                  )}
-                </div>
-              </Button>
-            </div>
-          ))}
-        </div>
-
-        {/* Footer Buttons */}
-        <div className="space-y-2">
-          <Link href={"/"}>
+        <>
+          {/* Sidebar Content */}
+          <div className={`
+            ${isSidebarOpen ? 'block' : 'hidden sm:block'}
+            flex-grow flex flex-col space-y-4 overflow-y-auto py-4
+          `}>
+            {/* New Chat Button */}
             <Button
               className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] p-2 rounded-md 
-                transition-all duration-300 w-full`}
+            transition-all duration-300 w-full`}
+              onClick={startNewChatroom}
             >
-              {isSidebarOpen ? "Home" : "🏠"}
+              {isSidebarOpen ? "+ New Chat" : "+"}
             </Button>
-          </Link>
-          <Button
-            className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] p-2 rounded-md 
+
+            {/* Chat Groups */}
+            {chatGroups.map((group) => (
+              <div key={group.displayId}>
+                <Button
+                  key={group.displayId}
+                  className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] rounded-md 
+                  transition-all duration-300 truncate w-full h-auto`}
+                  onClick={() => {
+                    setMessages(group.chat);
+                    setCurrentChatId(group.displayId);
+                  }}
+                >
+                  <div className="flex justify-start text-center truncate">
+                    {isSidebarOpen ? (
+                      <>
+                        <div className="flex flex-col">
+                          <span className="text-sm">{group.title}</span>
+                          <span className="text-sm">
+                            {formatDate(group.createdAt)}
+                          </span>
+                        </div>
+                      </>
+                    ) : (
+                      <span className="text-sm">{group.title}</span>
+                    )}
+                  </div>
+                </Button>
+              </div>
+            ))}
+          </div>
+
+          {/* Footer Buttons */}
+          <div className={`
+            ${isSidebarOpen ? 'block' : 'hidden sm:block'}
+            space-y-2`}>
+            <Link href={"/"}>
+              <Button
+                className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] p-2 rounded-md 
               transition-all duration-300 w-full`}
-            onClick={handleLogout}
-          >
-            {isSidebarOpen ? "Sign Out" : "🚪"}
-          </Button>
-        </div>
+              >
+                {isSidebarOpen ? "Home" : "🏠"}
+              </Button>
+            </Link>
+            <Button
+              className={`text-white font-bold bg-[#6d5b47] hover:bg-[#f4eee8] hover:text-[#292628] p-2 rounded-md 
+            transition-all duration-300 w-full`}
+              onClick={handleLogout}
+            >
+              {isSidebarOpen ? "Sign Out" : "🚪"}
+            </Button>
+          </div>
+        </>
+
+
       </div>
 
       {/* Chatroom範圍 */}
       <motion.div
-        className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] items-center
-     min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-20 w-full"
+        className="flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] 
+        items-center min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-20 w-full"
         initial={{
           opacity: 0,
           scale: 0.8, // Start smaller for the "center-out" effect
@@ -480,32 +489,32 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
       // }}
       >
         {/* Background image transition */}
-      <AnimatePresence>
-        <motion.div
-          key={displayedBackground}
-          style={{
-            backgroundImage: displayedBackground
-              ? `linear-gradient(to right, rgba(253, 2225, 194, 0.45), rgba(250, 240, 218, 0.75), rgba(255, 242, 201, 0.95), rgba(250, 240, 218, 0.75), rgba(253, 225, 194, 0.45)), url(${displayedBackground})`
-              : `linear-gradient(to right, #E7C890, #f4eee8, #fff2c9, #fde1c2, #E7C890)`,
-            backgroundSize: displayedBackground ? "cover" : "initial",
-            backgroundPosition: "center",
-          }}
-          className="absolute top-0 left-0 w-full h-full z-0"
-          initial={{
-            opacity: 0.75,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0.75, // Fade out to 75% opacity on exit
-          }}
-          transition={{
-            duration: displayedBackground ? 4 : 0.5, // Adjust this duration for the background transition
-            ease: "easeInOut",
-          }}
-        />
-      </AnimatePresence>
+        <AnimatePresence>
+          <motion.div
+            key={displayedBackground}
+            style={{
+              backgroundImage: displayedBackground
+                ? `linear-gradient(to right, rgba(253, 2225, 194, 0.45), rgba(250, 240, 218, 0.75), rgba(255, 242, 201, 0.95), rgba(250, 240, 218, 0.75), rgba(253, 225, 194, 0.45)), url(${displayedBackground})`
+                : `linear-gradient(to right, #E7C890, #f4eee8, #fff2c9, #fde1c2, #E7C890)`,
+              backgroundSize: displayedBackground ? "cover" : "initial",
+              backgroundPosition: "center",
+            }}
+            className="absolute top-0 left-0 w-full h-full z-0"
+            initial={{
+              opacity: 0.75,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0.75, // Fade out to 75% opacity on exit
+            }}
+            transition={{
+              duration: displayedBackground ? 4 : 0.5, // Adjust this duration for the background transition
+              ease: "easeInOut",
+            }}
+          />
+        </AnimatePresence>
 
         <div className="flex flex-col w-full h-full justify-between z-10">
           <div className="flex flex-col">
@@ -545,7 +554,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
                 title="Start talking"
                 className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] transition-all duration-300"
               >
-                {listening ? <MicOff /> : <Mic />}
+                {listening ? <MicOff className="text-[3.5vw] sm:text-[1.8vw]" /> : <Mic className="text-[3.5vw] sm:text-[1.8vw]" />}
               </Button>
 
               <Button
@@ -554,7 +563,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
                 title="Send"
                 className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] transition-all duration-300"
               >
-                {<SendIcon />}
+                {<SendIcon className="text-[3.5vw] sm:text-[1.8vw]" />}
               </Button>
               <Button
                 onClick={handleDeleteChat}
@@ -562,7 +571,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
                 title="Delete the whole chat (permanantly)"
                 className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#e67764] bg-[#f05c41] transition-all duration-300"
               >
-                <DeleteForeverIcon />
+                <DeleteForeverIcon className="text-[3.5vw] sm:text-[1.8vw]" />
               </Button>
             </div>
           </div>

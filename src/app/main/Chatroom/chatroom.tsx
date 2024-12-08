@@ -217,7 +217,8 @@ const Chatroom = () => {
   return (
 
     <motion.div
-      className={`flex items-center min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-40 w-full`}
+      className={`flex bg-gradient-to-r from-[#f4eee8] via-[#fff2c9] to-[#fde1c2] 
+        items-center min-h-screen px-[6vw] py-[8vw] sm:py-10 sm:px-40 w-full`}
       initial={{
         opacity: 0,
         scale: 0.8, // Start smaller for the "center-out" effect
@@ -266,7 +267,7 @@ const Chatroom = () => {
         />
       </AnimatePresence>
 
-      <div className="flex flex-col w-full h-full justify-between z-10">
+      <div className="flex flex-col w-full h-full justify-around z-10">
         {/* <div className="text-black">aa{userMood}aa</div> */}
         <div className="flex flex-col">
           <Switch
@@ -317,7 +318,7 @@ const Chatroom = () => {
               disabled={isLoading}
               className="p-[5.5vw] mx-[8.5vw] sm:p-10 sm:py-8 sm:mx-10 sm:my-7 w-fit rounded-full hover:bg-[#b69c83] bg-[#9a7b5d] transition-all duration-300"
             >
-              <SendIcon />
+              <SendIcon/>
             </Button>
           </div>
 
