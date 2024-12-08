@@ -358,7 +358,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
     setMessages([]);
   };
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const toggleSidebar = () => {
     setIsSidebarOpen((prev) => !prev);
   };
@@ -499,7 +499,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
               backgroundSize: displayedBackground ? "cover" : "initial",
               backgroundPosition: "center",
             }}
-            className="absolute top-0 left-0 w-full h-full z-0"
+            className="absolute top-0 left-0 w-screen h-screen z-0"
             initial={{
               opacity: 0.75,
             }}
@@ -516,7 +516,7 @@ const Chatroom = ({ displayId: display_id }: ChatroomProps) => {
           />
         </AnimatePresence>
 
-        <div className="flex flex-col w-full h-full justify-between z-10">
+        <div className="flex flex-col w-full h-full sm:justify-between z-10">
           <div className="flex flex-col">
             <Switch
               defaultSelected
